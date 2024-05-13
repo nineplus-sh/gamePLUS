@@ -1,6 +1,9 @@
 [
   {
     "name": "Balatro",
-    "executables": ["Balatro.exe"]
+    "executables": [{
+	"name": "balatro/balatro.exe",
+	"os": "win32"
+    }]
   }
 ]
