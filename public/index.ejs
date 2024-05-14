@@ -1,0 +1,51 @@
+<html lang="en">
+    <head>
+        <title>gamePLUS</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+        <script>
+            document.addEventListener("DOMContentLoaded", function() {
+                const ctx = document.getElementById('myChart');
+
+                new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+                        datasets: [{
+                            label: 'Games',
+                            data: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        plugins: {
+                            legend: {
+                                display: false
+                            },
+                        },
+                        responsive: true,
+                        maintainAspectRatio: false
+                    }
+                });
+            })
+        </script>
+    </head>
+    <body>
+        <h1>gamePLUS</h1>
+        <p>gamePLUS is the game detection database for Quarky, the world's silliest chat app.</p>
+
+        <div style="width: 25em; height: 10em;"><canvas id="myChart"></canvas></div>
+
+        <form action="/search" method="get">
+            <input id="gamename" name="game" placeholder="Type a game name...">
+            <input type="submit" value="Search">
+        </form>
+
+        <% if (!isAdmin) { %>
+            <p><a href="#" style="font-size: 0.7em" onclick="document.cookie = `admin=${prompt('Please enter the password')}`;document.location.reload()">Admin-only app management</a></p>
+        <% } else { %>
+            <p><a href="/create">Create new app</a></p>
+        <% } %>
+    </body>
+</html>
