@@ -112,6 +112,7 @@ app.post('/create', (req, res) => {
 
 app.get('/search', async (req, res) => {
     const find = await Game.find({$text: {$search: req.query.game}}).exec();
+    console.log(find[0])
     res.render('search', {find});
 });
 

@@ -8,7 +8,8 @@
                 display: flex;
                 text-decoration: none;
                 color: black;
-                max-width: 25em;
+                width: 25em;
+                height: 96px;
 
                 padding: 0.5em;
                 margin-bottom: 1em;
@@ -24,13 +25,30 @@
             .title {
                 margin-left: 1em;
             }
+
+            .supported {
+                color: green;
+            }
+            .unsupported {
+                color: red;
+            }
         </style>
+
+        <script src="https://cdn.jsdelivr.net/npm/iconify-icon@2.1.0/dist/iconify-icon.min.js"></script>
     </head>
     <body>
         <h1>Search results</h1>
         <% for (let game of find) { %>
             <a href="/game/<%= game._id %>" class="game">
-                <img src="/game/<%= game._id %>/icon" class="logo"> <b class="title"><%= game.name %></b>
+                <img src="/game/<%= game._id %>/icon" class="logo">
+
+                <p class="title">
+                    <b><%= game.name %></b><br>
+
+                    <iconify-icon icon="simple-icons:windows11" width="32" class="<%= game.executables.some(exe => exe.platform === "win32") ? 'supported' : 'unsupported' %>"></iconify-icon>
+                    <iconify-icon icon="file-icons:finder" width="32" class="<%= game.executables.some(exe => exe.platform === "darwin") ? 'supported' : 'unsupported' %>"></iconify-icon>
+                    <iconify-icon icon="fa6-brands:linux" width="32" class="<%= game.executables.some(exe => exe.platform === "linux") ? 'supported' : 'unsupported' %>"></iconify-icon>
+                </p>
             </a>
         <% } %>
     </body>
