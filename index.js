@@ -20,15 +20,6 @@ app.use((req, res, next) => {
     next()
 })
 
-app.get('/', (req, res) => {
-    res.render('index', {isAdmin: req.admin});
-});
-
-app.get('/create', (req, res) => {
-    if(!req.admin) res.redirect("/");
-    res.render('gamecreate');
-});
-
 const GameSchema = new Schema({
     name: String,
     icon: Buffer,
@@ -36,6 +27,48 @@ const GameSchema = new Schema({
 });
 GameSchema.index({name: 'text'});
 const Game = mongoose.model('Game', GameSchema);
+
+app.get('/', async (req, res) => {
+    const graphData = await Game.aggregate([
+        {
+            $project: {
+                day: { $dateToString: { format: "%Y-%m-%d", date: { $toDate: "$_id" } } }
+            }
+        },
+        {
+            $group: {
+                _id: '$day',
+                count: { $sum: 1 }
+            }
+        },
+        {
+            $project: {
+                x: '$_id',
+                y: '$count',
+                _id: 0
+            }
+        },
+        { $sort: { x: 1 } }
+    ])
+
+    let xLabels = []
+    let yLabels = []
+
+    xLabels.push("2024-05-13");
+    yLabels.push(0);
+
+    graphData.forEach(function(data) {
+        xLabels.push(data.x);
+        yLabels.push(data.y);
+    })
+
+    res.render('index', {isAdmin: req.admin, xLabels: JSON.stringify(xLabels), yLabels: JSON.stringify(yLabels)});
+});
+
+app.get('/create', (req, res) => {
+    if(!req.admin) res.redirect("/");
+    res.render('gamecreate');
+});
 
 app.post('/create', (req, res) => {
     if(!req.admin) res.sendStatus(999);
@@ -69,7 +102,8 @@ app.get('/search', async (req, res) => {
 });
 
 app.get('/game/:id', async (req, res) => {
-    res.render('game');
+    const game = await Game.findById(req.params.id).exec();
+    res.render('game', {game});
 });
 
 app.get('/game/:id/icon', async (req, res) => {

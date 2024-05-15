@@ -11,14 +11,21 @@
                 new Chart(ctx, {
                     type: 'line',
                     data: {
-                        labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+                        labels: <%- xLabels %>,
                         datasets: [{
                             label: 'Games',
-                            data: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+                            data: <%- yLabels %>,
                             borderWidth: 1
                         }]
                     },
                     options: {
+                        scales: {
+                            y: {
+                                ticks: {
+                                    stepSize: 1
+                                }
+                            }
+                        },
                         plugins: {
                             legend: {
                                 display: false

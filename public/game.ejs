@@ -4,7 +4,10 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
     </head>
     <body>
-        <h1>Game</h1>
-        <p>Not implemented</p>
+        <h1><img src="/game/<%= game._id %>/icon" width="48" height="48"> <%= game.name %></h1>
+        <h2>Executables</h2>
+        <% for (let executable of game.executables) { %>
+            <p><%= executable.platform %>: <code><%= executable.name %> <%= executable.arguments %></code></p>
+        <% } %>
     </body>
 </html>
