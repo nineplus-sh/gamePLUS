@@ -14,6 +14,15 @@
                 margin-bottom: 1em;
                 border-radius: 5px;
                 background-color: #eee;
+                align-items: center;
+            }
+
+            .logo {
+                max-width: 96px;
+                max-height: 96px;
+            }
+            .title {
+                margin-left: 1em;
             }
         </style>
     </head>
@@ -21,8 +30,7 @@
         <h1>Search results</h1>
         <% for (let game of find) { %>
             <a href="/game/<%= game._id %>" class="game">
-                <img src="/game/<%= game._id %>/icon" width="48" height="48">
-                <%= game.name %>
+                <img src="/game/<%= game._id %>/icon" class="logo"> <b class="title"><%= game.name %></b>
             </a>
         <% } %>
     </body>
