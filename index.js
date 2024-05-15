@@ -35,21 +35,35 @@ app.get('/', async (req, res) => {
                 day: { $dateToString: { format: "%Y-%m-%d", date: { $toDate: "$_id" } } }
             }
         },
-        {
-            $group: {
-                _id: '$day',
-                count: { $sum: 1 }
+    {
+        $group: {
+            _id: '$day',
+            count: { $sum: 1 }
+        }
+    },
+    {
+        $setWindowFields: {
+            sortBy: { _id: 1 },
+            output: {
+                total: {
+                    $sum: '$count',
+                    window: {
+                        documents: ["unbounded", "current"]
+                    }
+                }
             }
-        },
-        {
-            $project: {
-                x: '$_id',
-                y: '$count',
-                _id: 0
-            }
-        },
-        { $sort: { x: 1 } }
-    ])
+        }
+    },
+    {
+        $project: {
+            x: '$_id',
+            y: '$total',
+            _id: 0
+        }
+    },
+    { $sort: { x: 1 } }
+]);
+
 
     let xLabels = []
     let yLabels = []
