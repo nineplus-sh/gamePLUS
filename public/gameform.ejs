@@ -1,0 +1,32 @@
+<form method="post" enctype="multipart/form-data">
+    <h2>Basic information</h2>
+    <label>Game name: <input type="text" name="gamename" required></label><br>
+    <label>Game icon: <input type="file" name="icon" accept="image/png"></label>
+    <h2 style="margin-bottom: 0;">Executables <button onclick="addExecutable(event)">new</button></h2>
+    <table id="executablearea">
+
+    </table>
+
+    <h3 style="margin-bottom: 0;">Done ^-^</h3>
+    <input type="submit">
+</form>
+<script>
+    function addExecutable(e) {
+        e?.preventDefault();
+
+        const executable = document.createElement("tr");
+        const curRow = document.querySelector("[id^='executable_wrap_']") ? parseInt(Array.from(document.querySelectorAll("[id^='executable_wrap_']")).slice(-1)[0].id.split("_")[2]) + 1 : 0
+        executable.id = `executable_wrap_${curRow}`
+        executable.innerHTML += `<td><input type='text' name='executable_name_${curRow}' placeholder='name'></td>`
+        executable.innerHTML += `<td><input type='text' name='executable_arguments_${curRow}' placeholder='arguments'></td>`
+        executable.innerHTML += `<td><input type='text' name='executable_platform_${curRow}' placeholder='platform' required></td>`
+
+        executable.innerHTML += `<td><button onclick="event.preventDefault();this.parentNode.parentNode.remove();">delete</button></td>`
+
+        document.querySelector("#executablearea").appendChild(executable);
+    }
+
+    document.addEventListener("DOMContentLoaded", function() {
+        addExecutable();
+    })
+</script>

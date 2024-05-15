@@ -2,8 +2,28 @@
     <head>
         <title>gamePLUS</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <style>
+            .game {
+                display: flex;
+                text-decoration: none;
+                color: black;
+                max-width: 25em;
+
+                padding: 0.5em;
+                margin-bottom: 1em;
+                border-radius: 5px;
+                background-color: #eee;
+            }
+        </style>
     </head>
     <body>
         <h1>Search results</h1>
+        <% for (let game of find) { %>
+            <a href="/game/<%= game._id %>" class="game">
+                <img src="/game/<%= game._id %>/icon" width="48" height="48">
+                <%= game.name %>
+            </a>
+        <% } %>
     </body>
 </html>
