@@ -107,7 +107,14 @@ app.post('/create', (req, res) => {
         })
 
         await game.save();
-        res.status(200).send("Yay, new yummy game! :D");
+        res.redirect(`/game/${game._id}`);
+        await fetch(process.env.DISCORD_WEBHOOK, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({content: `https://gameplus.nineplus.sh/game/${game._id}`}),
+        });
     });
 });
 
