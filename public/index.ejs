@@ -49,6 +49,12 @@
             <input type="submit" value="Search">
         </form>
 
+        <hr>
+
+        <h2 style="margin-bottom: 0;">Latest 10 games</h2>
+        <% for (let game of newestGames) { %>
+            <a href="/game/<%= game._id %>" class="game"><img src="/game/<%= game._id %>/icon" alt="<%= game.name %>" title="<%= game.name %>" width="48" height="48"></a>
+        <% } %>
         <% if (!isAdmin) { %>
             <p><a href="#" style="font-size: 0.7em" onclick="document.cookie = `admin=${prompt('Please enter the password')}`;document.location.reload()">Admin-only app management</a></p>
         <% } else { %>

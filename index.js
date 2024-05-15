@@ -76,7 +76,8 @@ app.get('/', async (req, res) => {
         yLabels.push(data.y);
     })
 
-    res.render('index', {isAdmin: req.admin, xLabels: JSON.stringify(xLabels), yLabels: JSON.stringify(yLabels)});
+    const newestGames = await Game.find().sort({ _id: -1 }).limit(10).exec();
+    res.render('index', {isAdmin: req.admin, xLabels: JSON.stringify(xLabels), yLabels: JSON.stringify(yLabels), newestGames});
 });
 
 app.get('/create', (req, res) => {
