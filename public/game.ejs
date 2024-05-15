@@ -6,6 +6,8 @@
         <meta property="og:title" content="<%= game.name %> :: gamePLUS" />
         <meta property="og:image" content="https://gameplus.nineplus.sh/game/<%= game._id %>/icon" />
         <meta property="og:description" content="See mappings for <%= game.name %> on gamePLUS, the executable mapping database for Quarky" />
+
+        <meta name="robots" content="noindex, nofollow" />
     </head>
     <body>
         <h1><img src="/game/<%= game._id %>/icon" width="48" height="48"> <%= game.name %></h1>
