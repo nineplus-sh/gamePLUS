@@ -51,7 +51,7 @@
 
         <hr>
 
-        <h2 style="margin-bottom: 0;">Latest 10 games</h2>
+        <h2 style="margin-bottom: 0;">Latest games</h2>
         <% for (let game of newestGames) { %>
             <a href="/game/<%= game._id %>" class="game"><img src="/game/<%= game._id %>/icon" alt="<%= game.name %>" title="<%= game.name %>" width="48" height="48"></a>
         <% } %>
