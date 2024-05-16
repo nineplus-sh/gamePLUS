@@ -30,39 +30,39 @@ const Game = mongoose.model('Game', GameSchema);
 
 app.get('/', async (req, res) => {
     const graphData = await Game.aggregate([
+            {
+                $project: {
+                    day: { $dateToString: { format: "%Y-%m-%d", date: { $toDate: "$_id" } } }
+                }
+            },
         {
-            $project: {
-                day: { $dateToString: { format: "%Y-%m-%d", date: { $toDate: "$_id" } } }
+            $group: {
+                _id: '$day',
+                count: { $sum: 1 }
             }
         },
-    {
-        $group: {
-            _id: '$day',
-            count: { $sum: 1 }
-        }
-    },
-    {
-        $setWindowFields: {
-            sortBy: { _id: 1 },
-            output: {
-                total: {
-                    $sum: '$count',
-                    window: {
-                        documents: ["unbounded", "current"]
+        {
+            $setWindowFields: {
+                sortBy: { _id: 1 },
+                output: {
+                    total: {
+                        $sum: '$count',
+                        window: {
+                            documents: ["unbounded", "current"]
+                        }
                     }
                 }
             }
-        }
-    },
-    {
-        $project: {
-            x: '$_id',
-            y: '$total',
-            _id: 0
-        }
-    },
-    { $sort: { x: 1 } }
-]);
+        },
+        {
+            $project: {
+                x: '$_id',
+                y: '$total',
+                _id: 0
+            }
+        },
+        { $sort: { x: 1 } }
+    ]);
 
 
     let xLabels = []
@@ -134,6 +134,10 @@ app.get('/game/:id/icon', async (req, res) => {
     res.contentType('image/png');
     res.set("Content-Disposition", "inline;");
     res.status(200).send(game.icon);
+});
+
+app.get('/games', async (req, res) => {
+    res.render("allgames", {games: await Game.find({}).sort({"name": 1}).exec()})
 });
 
 async function startApp() {

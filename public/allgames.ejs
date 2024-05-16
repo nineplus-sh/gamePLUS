@@ -1,0 +1,24 @@
+<html lang="en">
+    <head>
+        <title>gamePLUS</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <meta name="robots" content="noindex, nofollow" />
+        <style>
+            .games {
+                display: grid;
+                grid-template-columns: repeat(12, 48px);
+                grid-column-gap: 10px;
+                grid-row-gap: 10px;
+            }
+        </style>
+    </head>
+    <body>
+        <h2>All games</h2>
+        <div class="games">
+            <% for (let game of games) { %>
+                <a href="/game/<%= game._id %>" class="game"><img src="/game/<%= game._id %>/icon" alt="<%= game.name %>" title="<%= game.name %>" width="48" height="48"></a>
+            <% } %>
+        </div>
+    </body>
+</html>
