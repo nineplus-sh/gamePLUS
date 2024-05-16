@@ -76,7 +76,7 @@ app.get('/', async (req, res) => {
         yLabels.push(data.y);
     })
 
-    const newestGames = await Game.find().sort({ _id: -1 }).limit(10).exec();
+    const newestGames = await Game.find().sort({ _id: -1 }).limit(12).exec();
     res.render('index', {isAdmin: req.admin, xLabels: JSON.stringify(xLabels), yLabels: JSON.stringify(yLabels), newestGames});
 });
 
