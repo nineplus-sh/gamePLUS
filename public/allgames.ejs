@@ -38,6 +38,7 @@
     </head>
     <body>
         <h2>All games</h2>
+        <p>gamePLUS can detect these <%= games.length %> games:</p>
         <% for (let game of games) { %>
             <a href="/game/<%= game._id %>" class="game">
                 <img src="/game/<%= game._id %>/icon" class="logo">
