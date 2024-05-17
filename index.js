@@ -174,6 +174,10 @@ app.get('/game/:id/icon', async (req, res) => {
 app.get('/games', async (req, res) => {
     res.render("allgames", {games: await Game.find({}).sort({"name": 1}).exec()})
 });
+app.get('/api/games', async (req, res) => {
+    const games = await Game.find({});
+    res.json(games.map(g => ({ _id: g._id, name: g.name, executables: g.executables })));
+})
 
 async function startApp() {
     await mongoose.connect(process.env.MONGODB_URL);
