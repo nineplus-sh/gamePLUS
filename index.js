@@ -125,7 +125,42 @@ app.get('/search', async (req, res) => {
 
 app.get('/game/:id', async (req, res) => {
     const game = await Game.findById(req.params.id).exec();
-    res.render('game', {game});
+    res.render('game', {game, isAdmin: req.admin});
+});
+
+app.get('/game/:id/edit', async (req, res) => {
+    if (!req.admin) return res.redirect("/");
+
+    const game = await Game.findById(req.params.id);
+    if (!game) return res.status(404).send('Game not found');
+    res.render('gameedit', { game });
+});
+
+app.post('/game/:id/edit', async (req, res) => {
+    if(!req.admin) res.sendStatus(999);
+    const game = await Game.findById(req.params.id);
+    if (!game) return res.status(404).send('Game not found');
+
+    new multiparty.Form().parse(req, async function(err, fields, files) {
+        game.name = fields.gamename[0];
+        console.log(files.icon)
+        if(files.icon[0].size !== 0) game.icon = fs.readFileSync(files.icon[0].path);
+        game.executables = []
+
+        Object.keys(fields).forEach(entry => {
+            if(entry.startsWith("executable_platform_")) {
+                let executableIndex = entry.split("executable_platform_")[1];
+
+                game.executables.push({
+                    name: fields[`executable_name_${executableIndex}`][0],
+                    arguments: fields[`executable_arguments_${executableIndex}`][0],
+                    platform: fields[`executable_platform_${executableIndex}`][0],
+                })
+            }
+        })
+        await game.save();
+        res.redirect(`/game/${game._id}`);
+    })
 });
 
 app.get('/game/:id/icon', async (req, res) => {

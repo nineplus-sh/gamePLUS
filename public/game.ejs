@@ -19,5 +19,6 @@
                 <code><%= executable.name %> <%= executable.arguments %></code>
             </p>
         <% } %>
+        <% if (isAdmin) { %> <p><a href="/game/<%= game._id %>/edit">Edit app data</a></p> <% } %>
     </body>
 </html>
