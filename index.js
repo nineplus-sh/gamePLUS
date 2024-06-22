@@ -93,6 +93,9 @@ app.post('/create', (req, res) => {
         const game = new Game();
         game.name = fields.gamename[0];
         game.icon = fs.readFileSync(files.icon[0].path);
+        if(files.icon[0].headers["content-type"] === "image/x-icon" || files.icon[0].headers["content-type"] === "image/vnd.microsoft.icon") {
+            game.icon = await icoToPng(game.icon, 128)
+        }
         game.executables = []
 
         Object.keys(fields).forEach(entry => {
