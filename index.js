@@ -7,6 +7,7 @@ const cookieParser = require('cookie-parser');
 const multiparty = require('multiparty');
 const fs = require('fs');
 const {Schema} = require("mongoose");
+const icoToPng = require("ico-to-png");
 
 const port = 4146
 app.use(express.static('public/resources'));
@@ -143,8 +144,12 @@ app.post('/game/:id/edit', async (req, res) => {
 
     new multiparty.Form().parse(req, async function(err, fields, files) {
         game.name = fields.gamename[0];
-        console.log(files.icon)
-        if(files.icon[0].size !== 0) game.icon = fs.readFileSync(files.icon[0].path);
+        if(files.icon[0].size !== 0) {
+            game.icon = fs.readFileSync(files.icon[0].path);
+            if(files.icon[0].headers["content-type"] === "image/x-icon" || files.icon[0].headers["content-type"] === "image/vnd.microsoft.icon") {
+                game.icon = await icoToPng(game.icon, 128)
+            }
+        }
         game.executables = []
 
         Object.keys(fields).forEach(entry => {
