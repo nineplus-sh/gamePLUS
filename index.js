@@ -187,6 +187,11 @@ app.get('/api/games', cors(), async (req, res) => {
     res.json(games.map(g => ({ _id: g._id, name: g.name, executables: g.executables })));
 })
 
+app.get('/learn', async (req, res) => {
+    const sampleGame = (await Game.aggregate([{$match: {"executables.platform": "win32"}}, {$sample: { size: 1 }}]))[0]
+    res.render('learn', {sampleGame});
+});
+
 async function startApp() {
     await mongoose.connect(process.env.MONGODB_URL);
     app.listen(port, () => {
