@@ -7,7 +7,7 @@
     <table id="executablearea">
         <% game?.executables.forEach(function(executable, index) { %>
             <tr id="executable_wrap_<%= index %>">
-                <td><input type='text' name='executable_name_<%= index %>' placeholder='name' value="<%= executable.name %>"></td>
+                <td><input type='text' name='executable_name_<%= index %>' placeholder='name' value="<%= executable.name %>" oninput="smartName(event)"></td>
                 <td><input type='text' name='executable_arguments_<%= index %>' placeholder='arguments' value="<%= executable.arguments %>"></td>
                 <td><input type='text' name='executable_platform_<%= index %>' placeholder='platform' required value="<%= executable.platform %>"></td>
                 <td><button onclick="event.preventDefault();this.parentNode.parentNode.remove();">delete</button></td>
@@ -25,7 +25,7 @@
         const executable = document.createElement("tr");
         const curRow = document.querySelector("[id^='executable_wrap_']") ? parseInt(Array.from(document.querySelectorAll("[id^='executable_wrap_']")).slice(-1)[0].id.split("_")[2]) + 1 : 0
         executable.id = `executable_wrap_${curRow}`
-        executable.innerHTML += `<td><input type='text' name='executable_name_${curRow}' placeholder='name' pattern='.*(?<!\.app)$'></td>`
+        executable.innerHTML += `<td><input type='text' name='executable_name_${curRow}' placeholder='name' pattern='.*(?<!\.app)$' oninput='smartName(event)'></td>`
         executable.innerHTML += `<td><input type='text' name='executable_arguments_${curRow}' placeholder='arguments'></td>`
         executable.innerHTML += `<td><input type='text' name='executable_platform_${curRow}' placeholder='platform' required></td>`
 
@@ -38,6 +38,17 @@
         const fileReader = new FileReader();
         fileReader.readAsDataURL(document.querySelector("[name='icon']").files[0]);
         fileReader.onload = (e) => document.querySelector("#iconpreview").src = e.target.result;
+    }
+
+    function smartName(e) {
+        e.target.value = e.target.value.toLowerCase();
+
+        const platform = document.querySelector(`input[name="executable_platform_${e.target.name.split("executable_name_")[1]}"]`)
+        if(e.target.value.endsWith(".exe")) {
+            platform.value = "win32";
+        } else if (/.*\.app\//.test(e.target.value)) {
+            platform.value = "darwin"
+        }
     }
 
     document.addEventListener("DOMContentLoaded", function() {
