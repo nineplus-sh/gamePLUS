@@ -8,6 +8,8 @@ const multiparty = require('multiparty');
 const fs = require('fs');
 const {Schema} = require("mongoose");
 const icoToPng = require("ico-to-png");
+const nodeSteam = require("steam-user");
+const steamClient = new nodeSteam();
 
 const port = 4146
 app.use(express.static('public/resources'));
@@ -87,7 +89,7 @@ app.get('/create', (req, res) => {
 });
 
 app.post('/create', (req, res) => {
-    if(!req.admin) res.sendStatus(999);
+    if(!req.admin) return res.sendStatus(999);
 
     new multiparty.Form().parse(req, async function(err, fields, files) {
         const game = new Game();
@@ -141,7 +143,7 @@ app.get('/game/:id/edit', async (req, res) => {
 });
 
 app.post('/game/:id/edit', async (req, res) => {
-    if(!req.admin) res.sendStatus(999);
+    if(!req.admin) return res.sendStatus(999);
     const game = await Game.findById(req.params.id);
     if (!game) return res.status(404).send('Game not found');
 
@@ -192,8 +194,28 @@ app.get('/learn', async (req, res) => {
     res.render('learn', {sampleGame});
 });
 
+app.get('/steam/:search', async (req, res) => {
+    if(!req.admin || !process.env.SGDB_KEY) return res.sendStatus(999);
+    const { default: SGDB } = await import('steamgriddb');
+    const client = new SGDB(process.env.SGDB_KEY);
+
+    const searchResult = (await client.searchGame(req.params.search))[0]
+    if(!searchResult) return res.sendStatus(404);
+
+    const steamAppId = (await client.getGame({type: "id", id: searchResult.id}, {"platformdata": ["steam"]})).external_platform_data.steam[0].id;
+    const appInfo = (await steamClient.getProductInfo([parseInt(steamAppId)], [])).apps[steamAppId].appinfo
+
+    return res.json({
+        executables: appInfo.config.launch,
+        icons: null
+    })
+})
+
 async function startApp() {
     await mongoose.connect(process.env.MONGODB_URL);
+    console.log("Connected to database")
+    await steamClient.logOn({anonymous: true});
+    console.log("Anonymously signed into Steam")
     app.listen(port, () => {
         console.log(`gamePLUS listening on port ${port}`)
     })
