@@ -51,7 +51,7 @@
         Object.values(steamFill.executables).forEach(function(executable) {
             addExecutable(undefined, {
                 name: executable.executable.toLowerCase(),
-                platform: executable.config.oslist === "windows" ? "win32" : executable.config.oslist === "macos" ? "darwin" : "linux"
+                platform: !executable.config?.oslist ? "win32" : executable.config.oslist === "windows" ? "win32" : executable.config.oslist === "macos" ? "darwin" : "linux"
             })
         })
     }
