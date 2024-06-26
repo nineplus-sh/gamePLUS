@@ -208,7 +208,7 @@ app.get('/steam/:search', async (req, res) => {
     return res.json({
         name: appInfo.common.name,
         executables: appInfo.config.launch,
-        icons: null
+        sgdbUrl: `https://steamgriddb.com/game/${searchResult.id}/icons`
     })
 })
 

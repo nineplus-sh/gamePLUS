@@ -47,6 +47,9 @@
         if(!steamFill) alert("Server error")
 
         document.querySelector("input[name='gamename']").value = steamFill.name
+        document.querySelector("#iconpreview").onclick = function() {
+            window.open(steamFill.sgdbUrl, '_blank').focus();
+        }
         document.querySelector("#executablearea").innerHTML = "";
         Object.values(steamFill.executables).forEach(function(executable) {
             addExecutable(undefined, {
