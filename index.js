@@ -206,6 +206,7 @@ app.get('/steam/:search', async (req, res) => {
     const appInfo = (await steamClient.getProductInfo([parseInt(steamAppId)], [])).apps[steamAppId].appinfo
 
     return res.json({
+        name: appInfo.common.name,
         executables: appInfo.config.launch,
         icons: null
     })

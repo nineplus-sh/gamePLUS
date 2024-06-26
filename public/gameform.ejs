@@ -43,11 +43,12 @@
     async function autofillExecutables(e) {
         e?.preventDefault();
 
-        const executables = (await (await fetch(`/steam/${document.querySelector("input[name='gamename']").value}`)).json()).executables;
-        if(!executables) alert("Server error")
+        const steamFill = (await (await fetch(`/steam/${document.querySelector("input[name='gamename']").value}`)).json());
+        if(!steamFill) alert("Server error")
 
+        document.querySelector("input[name='gamename']").value = steamFill.name
         document.querySelector("#executablearea").innerHTML = "";
-        Object.values(executables).forEach(function(executable) {
+        Object.values(steamFill.executables).forEach(function(executable) {
             addExecutable(undefined, {
                 name: executable.executable.toLowerCase(),
                 platform: executable.config.oslist === "windows" ? "win32" : executable.config.oslist === "macos" ? "darwin" : "linux"
