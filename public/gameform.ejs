@@ -59,6 +59,7 @@
             if(!problematic) problematic = nameProblematic(exeName);
             addExecutable(undefined, {
                 name: exeName,
+                arguments: executable.arguments,
                 platform: !executable.config?.oslist ? "win32" : executable.config.oslist === "windows" ? "win32" : executable.config.oslist === "macos" ? "darwin" : "linux",
                 problematic: nameProblematic(exeName)
             })
