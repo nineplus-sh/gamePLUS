@@ -113,7 +113,7 @@ app.post('/create', (req, res) => {
         })
 
         await game.save();
-        res.redirect(`/game/${game._id}`);
+        res.redirect(`/game/${game._id}?created=true`);
         await fetch(process.env.DISCORD_WEBHOOK, {
             method: "POST",
             headers: {
@@ -130,8 +130,9 @@ app.get('/search', async (req, res) => {
 });
 
 app.get('/game/:id', async (req, res) => {
+    if(!mongoose.isValidObjectId(req.params.id)) return res.sendStatus(404);
     const game = await Game.findById(req.params.id).exec();
-    res.render('game', {game, isAdmin: req.admin});
+    res.render('game', {game, isAdmin: req.admin, isNotable: req.query.created});
 });
 
 app.get('/game/:id/edit', async (req, res) => {

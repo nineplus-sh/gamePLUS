@@ -1,6 +1,10 @@
 {
   "name": "gameplus",
   "main": "index.js",
+  "private": true,
+  "scripts": {
+    "cubism": "webpack --config src/cubism/webpack.config.js"
+  },
   "dependencies": {
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
@@ -15,5 +19,11 @@
   },
   "trustedDependencies": [
     "lodepng"
-  ]
+  ],
+  "devDependencies": {
+    "ts-loader": "^9.5.1",
+    "typescript": "^5.5.2",
+    "webpack": "^5.92.1",
+    "webpack-cli": "^5.1.4"
+  }
 }

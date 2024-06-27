@@ -1,0 +1,1 @@
+/home/hakase/Documents/Git/gameplus/src/cubism/Core/live2dcubismcore.min.js

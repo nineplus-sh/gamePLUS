@@ -15,6 +15,19 @@
                 font-family: sans-serif;
             }
         </style>
+
+        <% if (isNotable) { %>
+        <script>
+            new Audio("/sfx/success.mp3").play();
+            window.cubismNoMouth = true;
+            window.cubismColonO = true;
+            window.addEventListener("cubismready", function() {
+                window.cubismMotion("/cubism/hiyori_pro/motion/hiyori_m03.motion3.json")
+            })
+        </script>
+        <script src="/cubism/cubismcore.js"></script>
+        <script src="/cubism/cubism.js"></script>
+        <% } %>
     </head>
     <body>
         <h1><img src="/game/<%= game._id %>/icon" width="48" height="48"> <%= game.name %></h1>

@@ -34,6 +34,7 @@
         document.querySelector("#executablearea").appendChild(executable);
 
         if(data) {
+            if(data.problematic) document.querySelector(`input[name='executable_name_${curRow}']`).setAttribute("gp-problematic", "unfortunately")
             if(data.name) document.querySelector(`input[name='executable_name_${curRow}']`).value = data.name;
             if(data.arguments) document.querySelector(`input[name='executable_arguments_${curRow}']`).value = data.arguments;
             if(data.platform) document.querySelector(`input[name='executable_platform_${curRow}']`).value = data.platform;
@@ -51,12 +52,25 @@
             window.open(steamFill.sgdbUrl, '_blank').focus();
         }
         document.querySelector("#executablearea").innerHTML = "";
+
+        let problematic = false;
         Object.values(steamFill.executables).forEach(function(executable) {
+            let exeName = executable.executable.toLowerCase();
+            if(!problematic) problematic = nameProblematic(exeName);
             addExecutable(undefined, {
-                name: executable.executable.toLowerCase(),
-                platform: !executable.config?.oslist ? "win32" : executable.config.oslist === "windows" ? "win32" : executable.config.oslist === "macos" ? "darwin" : "linux"
+                name: exeName,
+                platform: !executable.config?.oslist ? "win32" : executable.config.oslist === "windows" ? "win32" : executable.config.oslist === "macos" ? "darwin" : "linux",
+                problematic: nameProblematic(exeName)
             })
         })
+
+        if(problematic) {
+            new Audio("/sfx/autofill_problematic.wav").play();
+            cubismMotion("/cubism/hiyori_pro/motion/hiyori_m09.motion3.json");
+        } else {
+            new Audio("/sfx/autofill_success.wav").play();
+            cubismMotion("/cubism/hiyori_pro/motion/hiyori_m08.motion3.json");
+        }
     }
 
     function renderImage() {
@@ -74,6 +88,17 @@
         } else if (/.*\.app\//.test(e.target.value)) {
             platform.value = "darwin"
         }
+
+        if(e.target.getAttribute("gp-problematic") && !nameProblematic(e.target.value)) {
+            e.target.removeAttribute("gp-problematic");
+            cubismMotion("/cubism/hiyori_pro/motion/hiyori_m08.motion3.json");
+            new Audio("/sfx/autofill_repaired.wav").play();
+        }
+    }
+
+    function nameProblematic(name) {
+        if(name.endsWith(".app") || name === "game.exe" || name === "launcher.exe") return true;
+        return false;
     }
 
     document.addEventListener("DOMContentLoaded", function() {

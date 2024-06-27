@@ -1,0 +1,1 @@
+Live2D Cubism Core must be downloaded at https://www.live2d.com/en/sdk/download/web/
