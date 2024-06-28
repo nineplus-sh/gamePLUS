@@ -1,3 +1,11 @@
+<style>
+    input[gp-problematic] {
+        border: 2px yellow dashed;
+        background-color: black;
+        color: white;
+    }
+</style>
+
 <form method="post" enctype="multipart/form-data">
     <img id="iconpreview" src="<%= game ? `/game/${game._id}/icon` : "/placeholder.png" %>" style="float: left; margin-right: 1em;" width="96" height="96">
     <h2>Basic information</h2>
