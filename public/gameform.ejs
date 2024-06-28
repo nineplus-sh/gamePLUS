@@ -44,8 +44,14 @@
     async function autofillExecutables(e) {
         e?.preventDefault();
 
-        const steamFill = (await (await fetch(`/steam/${document.querySelector("input[name='gamename']").value}`)).json());
-        if(!steamFill) alert("Server error")
+        let steamFillRequest = await fetch(`/steam/${document.querySelector("input[name='gamename']").value}`);
+        if(!steamFillRequest.ok) {
+            alert("Server error")
+            new Audio("/sfx/autofill_problematic.wav").play();
+            cubismMotion("/cubism/hiyori_pro/motion/hiyori_m10.motion3.json");
+            return;
+        }
+        let steamFill = await steamFillRequest.json();
 
         document.querySelector("input[name='gamename']").value = steamFill.name
         document.querySelector("#iconpreview").onclick = function() {

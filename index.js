@@ -203,7 +203,8 @@ app.get('/steam/:search', async (req, res) => {
     const searchResult = (await client.searchGame(req.params.search))[0]
     if(!searchResult) return res.sendStatus(404);
 
-    const steamAppId = (await client.getGame({type: "id", id: searchResult.id}, {"platformdata": ["steam"]})).external_platform_data.steam[0].id;
+    const steamAppId = (await client.getGame({type: "id", id: searchResult.id}, {"platformdata": ["steam"]})).external_platform_data?.steam?.[0].id;
+    if(!steamAppId) return res.sendStatus(404);
     const appInfo = (await steamClient.getProductInfo([parseInt(steamAppId)], [])).apps[steamAppId].appinfo
 
     return res.json({
