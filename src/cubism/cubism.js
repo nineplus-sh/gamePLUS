@@ -115,9 +115,9 @@ fetch(`${modelBase}${FileReferences.Moc}`).then(res => res.arrayBuffer()).then(a
         })
     }
 
-    let i = 0;
-    for (const texture of FileReferences.Textures) {
-        const image = new Image();
+    for (let i = 0; i < FileReferences.Textures.length; i++) {
+        let texture = FileReferences.Textures[i];
+        let image = new Image();
         image.onload = () => {
             const tex = gl.createTexture();
             gl.bindTexture(gl.TEXTURE_2D, tex);
@@ -129,7 +129,6 @@ fetch(`${modelBase}${FileReferences.Moc}`).then(res => res.arrayBuffer()).then(a
             gl.generateMipmap(gl.TEXTURE_2D);
 
             renderer.bindTexture(i, tex);
-            i++;
         }
         image.src = `${modelBase}${texture}`;
     }
