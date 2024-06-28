@@ -211,7 +211,13 @@ app.get('/steam/:search', async (req, res) => {
     return res.json({
         name: appInfo.common.name,
         executables: Object.values(appInfo.config.launch).sort((a,b) => osOrder.indexOf(a.config?.oslist) - osOrder.indexOf(b.config?.oslist)),
-        sgdbUrl: `https://steamgriddb.com/game/${searchResult.id}/icons`
+        depots: Object.fromEntries(
+            Object.entries(appInfo.depots).filter(([key, value]) =>
+                key !== "branches" && key !== "baselanguages" && key !== "workshopdepot" && !value.depotfromapp && !value.dlcappid
+            )
+        ),
+        sgdbUrl: `https://steamgriddb.com/game/${searchResult.id}/icons`,
+        steamAppId: steamAppId
     })
 })
 

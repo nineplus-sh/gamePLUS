@@ -43,6 +43,7 @@
 
         if(data) {
             if(data.problematic) document.querySelector(`input[name='executable_name_${curRow}']`).setAttribute("gp-problematic", "unfortunately")
+            if(data.depotUrl) document.querySelector(`input[name='executable_name_${curRow}']`).setAttribute("gp-depot", data.depotUrl)
             if(data.name) document.querySelector(`input[name='executable_name_${curRow}']`).value = data.name;
             if(data.arguments) document.querySelector(`input[name='executable_arguments_${curRow}']`).value = data.arguments;
             if(data.platform) document.querySelector(`input[name='executable_platform_${curRow}']`).value = data.platform;
@@ -67,15 +68,27 @@
         }
         document.querySelector("#executablearea").innerHTML = "";
 
+        let depots = {
+            "windows": null,
+            "macos": null,
+            "linux": null
+        }
+        Object.entries(steamFill.depots).forEach(([id, data]) => {
+            if(depots[data.config?.oslist]) depots[data.config?.oslist] = "toomany"
+            if(!depots[data.config?.oslist]) depots[data.config?.oslist] = parseInt(id)
+        })
+
         let problematic = false;
         steamFill.executables.forEach(function(executable) {
             let exeName = executable.executable.toLowerCase();
             if(!problematic) problematic = nameProblematic(exeName);
+
             addExecutable(undefined, {
                 name: exeName,
                 arguments: executable.arguments,
                 platform: !executable.config?.oslist ? "win32" : executable.config.oslist === "windows" ? "win32" : executable.config.oslist === "macos" ? "darwin" : "linux",
-                problematic: nameProblematic(exeName)
+                problematic: nameProblematic(exeName),
+                depotUrl: !isNaN(depots[executable.config?.oslist]) ? `https://steamdb.info/depot/${depots[executable.config?.oslist]}` : `https://steamdb.info/app/${steamFill.steamAppId}/depots`
             })
         })
 
@@ -118,5 +131,12 @@
 
     document.addEventListener("DOMContentLoaded", function() {
         <% if (!game) { %> addExecutable(); <% } %>
+
+        document.querySelector("#executablearea").addEventListener('mousedown', function(e) {
+            if (e.button === 1 && e.target?.getAttribute("gp-depot")) {
+                e.preventDefault();
+                window.open(e.target.getAttribute("gp-depot"), "_blank")
+            }
+        }, true);
     })
 </script>
