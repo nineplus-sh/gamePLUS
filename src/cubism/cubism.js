@@ -63,6 +63,10 @@ document.addEventListener('blur', (event) => {
 fetch(`${modelBase}${FileReferences.Moc}`).then(res => res.arrayBuffer()).then(async arrayBuffer => {
     const style = document.createElement('style');
     style.textContent = `
+                body {
+                    width: 99vw;
+                    height: 97vh;
+                }
                 #cubism {
                     position: fixed;
                     left: -140px;
