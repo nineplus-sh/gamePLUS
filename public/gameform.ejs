@@ -88,7 +88,7 @@
                 arguments: executable.arguments,
                 platform: !executable.config?.oslist ? "win32" : executable.config.oslist === "windows" ? "win32" : executable.config.oslist === "macos" ? "darwin" : "linux",
                 problematic: nameProblematic(exeName),
-                depotUrl: !isNaN(depots[executable.config?.oslist]) ? `https://steamdb.info/depot/${depots[executable.config?.oslist]}` : `https://steamdb.info/app/${steamFill.steamAppId}/depots`
+                depotUrl: !isNaN(depots[executable.config?.oslist]) ? `https://steamdb.info/depot/${depots[executable.config?.oslist]}#files` : `https://steamdb.info/app/${steamFill.steamAppId}/depots#depots`
             })
         })
 
