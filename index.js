@@ -207,9 +207,10 @@ app.get('/steam/:search', async (req, res) => {
     if(!steamAppId) return res.sendStatus(404);
     const appInfo = (await steamClient.getProductInfo([parseInt(steamAppId)], [])).apps[steamAppId].appinfo
 
+    const osOrder = ["windows", "macos", "linux"]
     return res.json({
         name: appInfo.common.name,
-        executables: appInfo.config.launch,
+        executables: Object.values(appInfo.config.launch).sort((a,b) => osOrder.indexOf(a.config?.oslist) - osOrder.indexOf(b.config?.oslist)),
         sgdbUrl: `https://steamgriddb.com/game/${searchResult.id}/icons`
     })
 })

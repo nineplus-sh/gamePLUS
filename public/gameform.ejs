@@ -60,7 +60,7 @@
         document.querySelector("#executablearea").innerHTML = "";
 
         let problematic = false;
-        Object.values(steamFill.executables).forEach(function(executable) {
+        steamFill.executables.forEach(function(executable) {
             let exeName = executable.executable.toLowerCase();
             if(!problematic) problematic = nameProblematic(exeName);
             addExecutable(undefined, {
