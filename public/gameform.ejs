@@ -25,7 +25,7 @@
         const executable = document.createElement("tr");
         const curRow = document.querySelector("[id^='executable_wrap_']") ? parseInt(Array.from(document.querySelectorAll("[id^='executable_wrap_']")).slice(-1)[0].id.split("_")[2]) + 1 : 0
         executable.id = `executable_wrap_${curRow}`
-        executable.innerHTML += `<td><input type='text' name='executable_name_${curRow}' placeholder='name' pattern='.*(?<!\.app)$' oninput='smartName(event)'></td>`
+        executable.innerHTML += `<td><input type='text' name='executable_name_${curRow}' placeholder='name' pattern='.*(?<!\.app|\.sh)$' oninput='smartName(event)'></td>`
         executable.innerHTML += `<td><input type='text' name='executable_arguments_${curRow}' placeholder='arguments'></td>`
         executable.innerHTML += `<td><input type='text' name='executable_platform_${curRow}' placeholder='platform' required></td>`
 
@@ -104,7 +104,7 @@
     }
 
     function nameProblematic(name) {
-        if(name.endsWith(".app") || name === "game.exe" || name === "launcher.exe") return true;
+        if(name.endsWith(".app") || name.endsWith(".sh") || name === "game.exe" || name === "launcher.exe") return true;
         return false;
     }
 
