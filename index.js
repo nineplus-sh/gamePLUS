@@ -108,7 +108,7 @@ async function processGame(game, fields, files) {
             width: 128,
             height: 128,
             withoutEnlargement: true
-        })
+        }).toBuffer()
     }
 
     game.icon = iconData;
