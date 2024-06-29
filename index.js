@@ -101,8 +101,7 @@ async function processGame(game, fields, files) {
         iconData = await Buffer.from(await iconRequest.arrayBuffer())
         iconType = iconRequest.headers.get("content-type");
     }
-    console.log(iconType)
-    if(iconType === "image/x-icon" ||    iconType === "image/vnd.microsoft.icon") {
+    if(iconType === "image/x-icon" || iconType === "image/vnd.microsoft.icon") {
         iconData = await icoToPng(iconData, 128)
     } else if(iconType === "image/png") {
         iconData = await sharp(iconData).resize({
