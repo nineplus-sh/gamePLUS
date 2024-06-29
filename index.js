@@ -92,13 +92,13 @@ async function processGame(game, fields, files) {
     let iconData;
     let iconType;
 
-    if(fields.iconurl[0]) {
+    if(files.icon[0]) {
+        iconData = fs.readFileSync(files.icon[0].path);
+        iconType = files.icon[0].headers["content-type"];
+    } else if(fields.iconurl[0]) {
         const iconRequest = await fetch(fields.iconurl[0]);
         iconData = await Buffer.from(await iconRequest.arrayBuffer())
         iconType = iconRequest.headers["content-type"];
-    } else {
-        iconData = fs.readFileSync(files.icon[0].path);
-        iconType = files.icon[0].headers["content-type"];
     }
     if(iconType === "image/x-icon" || iconType === "image/vnd.microsoft.icon") {
         iconData = await icoToPng(iconData, 128)
