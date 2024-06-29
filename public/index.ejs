@@ -15,8 +15,6 @@
         <script>
             document.addEventListener("DOMContentLoaded", function() {
                 const ctx = document.getElementById('myChart');
-                const pointImage = new Image(16,16);
-                pointImage.src = "/favicon.ico"
 
                 new Chart(ctx, {
                     type: 'line',
@@ -26,8 +24,7 @@
                             label: 'Games',
                             data: <%- yLabels %>,
                             borderWidth: 1,
-                            stepped: true,
-                            pointStyle: pointImage
+                            stepped: true
                         }]
                     },
                     options: {
