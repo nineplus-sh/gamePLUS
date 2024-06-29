@@ -88,31 +88,49 @@ app.get('/create', (req, res) => {
     res.render('gamecreate');
 });
 
+async function processGame(game, fields, files) {
+    let iconData;
+    let iconType;
+
+    if(fields.iconurl[0]) {
+        const iconRequest = await fetch(fields.iconurl[0]);
+        iconData = await Buffer.from(await iconRequest.arrayBuffer())
+        iconType = iconRequest.headers["content-type"];
+    } else {
+        iconData = fs.readFileSync(files.icon[0].path);
+        iconType = files.icon[0].headers["content-type"];
+    }
+    if(iconType === "image/x-icon" || iconType === "image/vnd.microsoft.icon") {
+        iconData = await icoToPng(iconData, 128)
+    }
+
+    game.icon = iconData;
+    game.name = fields.gamename[0];
+    game.executables = []
+
+    Object.keys(fields).forEach(entry => {
+        if(entry.startsWith("executable_platform_")) {
+            let executableIndex = entry.split("executable_platform_")[1];
+
+            game.executables.push({
+                name: fields[`executable_name_${executableIndex}`][0],
+                arguments: fields[`executable_arguments_${executableIndex}`][0],
+                platform: fields[`executable_platform_${executableIndex}`][0],
+            })
+        }
+    })
+
+    await game.save();
+    return game;
+}
+
 app.post('/create', (req, res) => {
     if(!req.admin) return res.sendStatus(999);
 
+    let game = new Game();
     new multiparty.Form().parse(req, async function(err, fields, files) {
-        const game = new Game();
-        game.name = fields.gamename[0];
-        game.icon = fs.readFileSync(files.icon[0].path);
-        if(files.icon[0].headers["content-type"] === "image/x-icon" || files.icon[0].headers["content-type"] === "image/vnd.microsoft.icon") {
-            game.icon = await icoToPng(game.icon, 128)
-        }
-        game.executables = []
+        game = await processGame(game, fields, files)
 
-        Object.keys(fields).forEach(entry => {
-            if(entry.startsWith("executable_platform_")) {
-                let executableIndex = entry.split("executable_platform_")[1];
-
-                game.executables.push({
-                    name: fields[`executable_name_${executableIndex}`][0],
-                    arguments: fields[`executable_arguments_${executableIndex}`][0],
-                    platform: fields[`executable_platform_${executableIndex}`][0],
-                })
-            }
-        })
-
-        await game.save();
         res.redirect(`/game/${game._id}?created=true`);
         await fetch(process.env.DISCORD_WEBHOOK, {
             method: "POST",
@@ -145,31 +163,11 @@ app.get('/game/:id/edit', async (req, res) => {
 
 app.post('/game/:id/edit', async (req, res) => {
     if(!req.admin) return res.sendStatus(999);
-    const game = await Game.findById(req.params.id);
+    let game = await Game.findById(req.params.id);
     if (!game) return res.status(404).send('Game not found');
 
     new multiparty.Form().parse(req, async function(err, fields, files) {
-        game.name = fields.gamename[0];
-        if(files.icon[0].size !== 0) {
-            game.icon = fs.readFileSync(files.icon[0].path);
-            if(files.icon[0].headers["content-type"] === "image/x-icon" || files.icon[0].headers["content-type"] === "image/vnd.microsoft.icon") {
-                game.icon = await icoToPng(game.icon, 128)
-            }
-        }
-        game.executables = []
-
-        Object.keys(fields).forEach(entry => {
-            if(entry.startsWith("executable_platform_")) {
-                let executableIndex = entry.split("executable_platform_")[1];
-
-                game.executables.push({
-                    name: fields[`executable_name_${executableIndex}`][0],
-                    arguments: fields[`executable_arguments_${executableIndex}`][0],
-                    platform: fields[`executable_platform_${executableIndex}`][0],
-                })
-            }
-        })
-        await game.save();
+        game = await processGame(game, fields, files);
         res.redirect(`/game/${game._id}`);
     })
 });
@@ -208,6 +206,7 @@ app.get('/steam/:search', async (req, res) => {
     const appInfo = (await steamClient.getProductInfo([parseInt(steamAppId)], [])).apps[steamAppId].appinfo
 
     const osOrder = ["windows", "macos", "linux"]
+    const sgdbIcons = (await client.getIconsById(searchResult.id)).map((entry) => entry.url)
     return res.json({
         name: appInfo.common.name,
         executables: Object.values(appInfo.config.launch).sort((a,b) => osOrder.indexOf(a.config?.oslist) - osOrder.indexOf(b.config?.oslist)),
@@ -216,6 +215,10 @@ app.get('/steam/:search', async (req, res) => {
                 key !== "branches" && key !== "baselanguages" && key !== "workshopdepot" && !value.depotfromapp && !value.dlcappid
             )
         ),
+        icons: [
+            `https://cdn.cloudflare.steamstatic.com/steamcommunity/public/images/apps/${steamAppId}/${appInfo.common.clienticon}.ico`,
+            ...sgdbIcons
+        ],
         sgdbUrl: `https://steamgriddb.com/game/${searchResult.id}/icons`,
         steamAppId: steamAppId
     })
