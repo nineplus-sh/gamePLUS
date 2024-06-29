@@ -10,6 +10,8 @@
         left: 0;
         margin: 4em 1em 1em 0.5em;
         width: 550px;
+        max-height: 220px;
+        overflow: scroll;
     }
     #sgdbicons h2 {
         margin: 0;
@@ -48,7 +50,7 @@
     <input type="submit">
 </form>
 <dialog id="sgdbicons">
-    <h2>Icons on SteamGridDB</h2>
+    <h2>Icons on SteamGridDB <button style="float: right" onclick="document.querySelector('#sgdbicons').close()">close</button></h2>
     <div id="sgdbarea">
 
     </div>
@@ -100,7 +102,10 @@
             }
         }
 
-        if(steamFill.icons.length > 1) steamFill.icons.slice(1).forEach(icon => document.querySelector("#sgdbarea").innerHTML += `<img src="${icon}" onClick="sgdbIcon(event)" class="sgdbicon">`)
+        if(steamFill.icons.length > 1) {
+            document.querySelector("#sgdbarea").innerHTML = "";
+            steamFill.icons.slice(1).forEach(icon => document.querySelector("#sgdbarea").innerHTML += `<img src="${icon}" onClick="sgdbIcon(event)" class="sgdbicon">`)
+        }
 
         document.querySelector("#executablearea").innerHTML = "";
 
