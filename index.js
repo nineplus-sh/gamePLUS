@@ -92,7 +92,7 @@ async function processGame(game, fields, files) {
     let iconData;
     let iconType;
 
-    if(files.icon[0]) {
+    if(files.icon[0].size > 0) {
         iconData = fs.readFileSync(files.icon[0].path);
         iconType = files.icon[0].headers["content-type"];
     } else if(fields.iconurl[0]) {
