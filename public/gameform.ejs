@@ -11,7 +11,7 @@
     <h2>Basic information</h2>
     <label>Game name: <input type="text" name="gamename" required value="<%= game?.name %>"></label><br>
     <label>Game icon: <input type="file" name="icon" accept="image/png, image/vnd.microsoft.icon" onchange="renderImage()"></label>
-    <h2 style="margin-bottom: 0;">Executables <button onclick="addExecutable(event)">new</button> <button onclick="autofillExecutables(event)">autofill</button></h2>
+    <h2 style="margin-bottom: 0;">Executables <button onclick="addExecutable(event)">new</button> <button onclick="autofillExecutables(event)">fetch from steam</button></h2>
     <table id="executablearea">
         <% game?.executables.forEach(function(executable, index) { %>
             <tr id="executable_wrap_<%= index %>">
