@@ -3,6 +3,8 @@
         <title>gamePLUS</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/moment@2.29.1/moment.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-moment@1.0.1/dist/chartjs-adapter-moment.min.js"></script>
 
         <style>
             html {
@@ -21,11 +23,22 @@
                         datasets: [{
                             label: 'Games',
                             data: <%- yLabels %>,
-                            borderWidth: 1
+                            borderWidth: 1,
+                            stepped: true
                         }]
                     },
                     options: {
                         scales: {
+                            x: {
+                                type: 'time',
+                                time: {
+                                    unit: 'day',
+                                    tooltipFormat: 'YYYY-MM-DD'
+                                },
+                                ticks: {
+                                    source: 'auto'
+                                }
+                            },
                             y: {
                                 ticks: {
                                     stepSize: 1
