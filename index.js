@@ -10,6 +10,7 @@ const {Schema} = require("mongoose");
 const icoToPng = require("ico-to-png");
 const nodeSteam = require("steam-user");
 const steamClient = new nodeSteam();
+const sharp = require("sharp");
 
 const port = 4146
 app.use(express.static('public/resources'));
@@ -98,10 +99,17 @@ async function processGame(game, fields, files) {
     } else if(fields.iconurl[0]) {
         const iconRequest = await fetch(fields.iconurl[0]);
         iconData = await Buffer.from(await iconRequest.arrayBuffer())
-        iconType = iconRequest.headers["content-type"];
+        iconType = iconRequest.headers.get("content-type");
     }
-    if(iconType === "image/x-icon" || iconType === "image/vnd.microsoft.icon") {
+    console.log(iconType)
+    if(iconType === "image/x-icon" ||    iconType === "image/vnd.microsoft.icon") {
         iconData = await icoToPng(iconData, 128)
+    } else if(iconType === "image/png") {
+        iconData = await sharp(iconData).resize({
+            width: 128,
+            height: 128,
+            withoutEnlargement: true
+        })
     }
 
     game.icon = iconData;
