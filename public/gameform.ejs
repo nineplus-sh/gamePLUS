@@ -102,7 +102,7 @@
         }
         let steamFill = await steamFillRequest.json();
 
-        document.querySelector("input[name='gamename']").value = steamFill.name
+        document.querySelector("input[name='gamename']").value = steamFill.name.replace("®","").replace("™","")
         document.querySelector("[name=iconurl]").value = steamFill.icons[0];
         document.querySelector("#iconpreview").src = steamFill.icons[0];
         document.querySelector("#iconpreview").onclick = function() {
