@@ -169,10 +169,12 @@
             platform.value = "darwin"
         }
 
-        if(e.target.getAttribute("gp-problematic") === "unfortunately" && !isBadExecutable(e.target.value)) {
+        if(e.target.getAttribute("gp-problematic") && !isBadExecutable(e.target.value)) {
             e.target.removeAttribute("gp-problematic");
-            cubismMotion("/cubism/hiyori_pro/motion/hiyori_m08.motion3.json");
-            new Audio("/sfx/autofill_repaired.wav").play();
+            if(e.target.getAttribute("gp-problematic") === "unfortunately") {
+                cubismMotion("/cubism/hiyori_pro/motion/hiyori_m08.motion3.json");
+                new Audio("/sfx/autofill_repaired.wav").play();
+            }
         } else if (isBadExecutable(e.target.value)) {
             e.target.setAttribute("gp-problematic", "your fault");
         }
