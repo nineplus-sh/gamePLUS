@@ -56,6 +56,17 @@
     </div>
 </dialog>
 <script>
+    const badExecutables = [
+        "game.exe",
+        "launcher.exe",
+        "dowser.exe",
+        "dowser"
+    ]
+    function isBadExecutable(name) {
+        if(name.endsWith(".app") || name.endsWith(".sh") || name.endsWith(".bat") || badExecutables.includes(name)) return true;
+        return false;
+    }
+
     function addExecutable(e, data) {
         e?.preventDefault();
 
@@ -122,13 +133,13 @@
         let problematic = false;
         steamFill.executables.forEach(function(executable) {
             let exeName = executable.executable.toLowerCase();
-            if(!problematic) problematic = nameProblematic(exeName);
+            if(!problematic) problematic = isBadExecutable(exeName);
 
             addExecutable(undefined, {
                 name: exeName,
                 arguments: executable.arguments,
                 platform: !executable.config?.oslist ? "win32" : executable.config.oslist === "windows" ? "win32" : executable.config.oslist === "macos" ? "darwin" : "linux",
-                problematic: nameProblematic(exeName),
+                problematic: isBadExecutable(exeName),
                 depotUrl: !isNaN(parseInt(depots[executable.config?.oslist])) ? `https://steamdb.info/depot/${depots[executable.config?.oslist]}#files` : `https://steamdb.info/app/${steamFill.steamAppId}/depots#depots`
             })
         })
@@ -158,16 +169,13 @@
             platform.value = "darwin"
         }
 
-        if(e.target.getAttribute("gp-problematic") && !nameProblematic(e.target.value)) {
+        if(e.target.getAttribute("gp-problematic") && !isBadExecutable(e.target.value)) {
             e.target.removeAttribute("gp-problematic");
             cubismMotion("/cubism/hiyori_pro/motion/hiyori_m08.motion3.json");
             new Audio("/sfx/autofill_repaired.wav").play();
+        } else if (isBadExecutable(e.target.value)) {
+            e.target.setAttribute("gp-problematic", "unfortunately");
         }
-    }
-
-    function nameProblematic(name) {
-        if(name.endsWith(".app") || name.endsWith(".sh") || name.endsWith(".bat") || name === "game.exe" || name === "launcher.exe") return true;
-        return false;
     }
 
     function sgdbIcon(event) {
