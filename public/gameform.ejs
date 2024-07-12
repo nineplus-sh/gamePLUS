@@ -63,7 +63,7 @@
         "dowser"
     ]
     function isBadExecutable(name) {
-        if(name.endsWith(".app") || name.endsWith(".sh") || name.endsWith(".bat") || badExecutables.includes(name)) return true;
+        if(name.startsWith("link2ea://") || name.endsWith(".app") || name.endsWith(".sh") || name.endsWith(".bat") || badExecutables.includes(name)) return true;
         return false;
     }
 

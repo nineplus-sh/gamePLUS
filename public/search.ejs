@@ -41,7 +41,10 @@
         <meta name="robots" content="noindex, nofollow" />
     </head>
     <body>
-        <h1>Search results</h1>
+        <h1>Search results <form action="/search" method="get">
+                <input id="gamename" name="game" placeholder="Type a game name...">
+                <input type="submit" value="Search">
+            </form></h1>
         <% for (let game of find) { %>
             <a href="/game/<%= game._id %>" class="game">
                 <img src="/game/<%= game._id %>/icon" class="logo">
