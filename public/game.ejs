@@ -7,7 +7,6 @@
         <meta property="og:image" content="https://gameplus.nineplus.sh/game/<%= game._id %>/icon" />
         <meta property="og:description" content="See mappings for <%= game.name %> on gamePLUS, the executable mapping database for Quarky" />
 
-        <script src="https://cdn.jsdelivr.net/npm/iconify-icon@2.1.0/dist/iconify-icon.min.js"></script>
         <meta name="robots" content="noindex, nofollow" />
 
         <style>
@@ -37,7 +36,7 @@
         <p>This game is detected when one of these executables are running:</p>
         <% for (let executable of game.executables) { %>
             <p>
-                <iconify-icon icon="<%= executable.platform === "win32" ? "simple-icons:windows11" : executable.platform === "darwin" ? "file-icons:finder" : "fa6-brands:linux" %>"></iconify-icon>
+                <img src="/icons/platforms/<%= executable.platform %>">
                 <code><%= executable.name %> <%= executable.arguments %></code>
             </p>
         <% } %>
