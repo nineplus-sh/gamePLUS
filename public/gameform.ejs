@@ -26,6 +26,16 @@
         height: 128px;
         cursor: pointer;
     }
+
+    .platformswitcher {
+        cursor: pointer;
+    }
+    .betakey {
+        display: none
+    }
+    .betakey.isReal {
+        display: inline;
+    }
 </style>
 
 <form method="post" enctype="multipart/form-data">
@@ -38,9 +48,11 @@
     <table id="executablearea">
         <% game?.executables.forEach(function(executable, index) { %>
             <tr id="executable_wrap_<%= index %>">
+                <td><img id='executable_picon_<%= index %>' class="platformswitcher" src="/icons/platforms/<%= executable.platform %>.png" onclick="crankPlatform(event)"></td>
+                <td></td>
                 <td><input type='text' name='executable_name_<%= index %>' placeholder='name' value="<%= executable.name %>" oninput="smartName(event)"></td>
                 <td><input type='text' name='executable_arguments_<%= index %>' placeholder='arguments' value="<%= executable.arguments %>"></td>
-                <td><input type='text' name='executable_platform_<%= index %>' placeholder='platform' required value="<%= executable.platform %>"></td>
+                <td><input type='hidden' name='executable_platform_<%= index %>' required value="<%= executable.platform %>"></td>
                 <td><button onclick="event.preventDefault();this.parentNode.parentNode.remove();">delete</button></td>
             </tr>
         <% }); %>
@@ -56,6 +68,11 @@
     </div>
 </dialog>
 <script>
+    const platformOrder = [
+        "win32",
+        "darwin",
+        "linux"
+    ]
     const badExecutables = [
         "game.exe",
         "launcher.exe",
@@ -73,9 +90,11 @@
         const executable = document.createElement("tr");
         const curRow = document.querySelector("[id^='executable_wrap_']") ? parseInt(Array.from(document.querySelectorAll("[id^='executable_wrap_']")).slice(-1)[0].id.split("_")[2]) + 1 : 0
         executable.id = `executable_wrap_${curRow}`
+        executable.innerHTML += `<td><img id="executable_picon_${curRow}" class="platformswitcher" src="/icons/platforms/unknown.png" onclick="crankPlatform(event)"></td>`
+        executable.innerHTML += `<td><img id="executable_betakey_${curRow}" class="betakey" src="/icons/drive--exclamation.png"></td>`
         executable.innerHTML += `<td><input type='text' name='executable_name_${curRow}' placeholder='name' pattern='.*(?<!\.app|\.sh|\.bat)$' oninput='smartName(event)'></td>`
         executable.innerHTML += `<td><input type='text' name='executable_arguments_${curRow}' placeholder='arguments'></td>`
-        executable.innerHTML += `<td><input type='text' name='executable_platform_${curRow}' placeholder='platform' required></td>`
+        executable.innerHTML += `<td><input type='hidden' name='executable_platform_${curRow}' placeholder='platform' required></td>`
 
         executable.innerHTML += `<td><button onclick="event.preventDefault();this.parentNode.parentNode.remove();">delete</button></td>`
 
@@ -86,7 +105,14 @@
             if(data.depotUrl) document.querySelector(`input[name='executable_name_${curRow}']`).setAttribute("gp-depot", data.depotUrl)
             if(data.name) document.querySelector(`input[name='executable_name_${curRow}']`).value = data.name;
             if(data.arguments) document.querySelector(`input[name='executable_arguments_${curRow}']`).value = data.arguments;
-            if(data.platform) document.querySelector(`input[name='executable_platform_${curRow}']`).value = data.platform;
+            if(data.platform) {
+                document.querySelector(`#executable_picon_${curRow}`).src = `/icons/platforms/${data.platform}.png`;
+                document.querySelector(`input[name='executable_platform_${curRow}']`).value = data.platform;
+            }
+            if(data.betaKey) {
+                document.querySelector(`#executable_betakey_${curRow}`).classList.add("isReal");
+                document.querySelector(`#executable_betakey_${curRow}`).title = data.betaKey;
+            }
         }
     }
 
@@ -140,7 +166,8 @@
                 arguments: executable.arguments,
                 platform: !executable.config?.oslist ? "win32" : executable.config.oslist === "windows" ? "win32" : executable.config.oslist === "macos" ? "darwin" : "linux",
                 problematic: isBadExecutable(exeName),
-                depotUrl: !isNaN(parseInt(depots[executable.config?.oslist])) ? `https://steamdb.info/depot/${depots[executable.config?.oslist]}#files` : `https://steamdb.info/app/${steamFill.steamAppId}/depots#depots`
+                depotUrl: !isNaN(parseInt(depots[executable.config?.oslist])) ? `https://steamdb.info/depot/${depots[executable.config?.oslist]}#files` : `https://steamdb.info/app/${steamFill.steamAppId}/depots#depots`,
+                betaKey: executable.config?.betakey
             })
         })
 
@@ -163,10 +190,13 @@
         e.target.value = e.target.value.toLowerCase();
 
         const platform = document.querySelector(`input[name="executable_platform_${e.target.name.split("executable_name_")[1]}"]`)
+        const picon = document.querySelector(`#executable_picon_${e.target.name.split("executable_name_")[1]}`)
         if(e.target.value.endsWith(".exe")) {
+            picon.src = "/icons/platforms/win32.png";
             platform.value = "win32";
-        } else if (/.*\.app\//.test(e.target.value)) {
-            platform.value = "darwin"
+        } else if (/.*\.app\/|\.app$/.test(e.target.value)) {
+            picon.src = "/icons/platforms/darwin.png";
+            platform.value = "darwin";
         }
 
         if(e.target.getAttribute("gp-problematic") && !isBadExecutable(e.target.value)) {
@@ -186,6 +216,16 @@
         document.querySelector("[name=iconurl]").value = iconURL;
         document.querySelector("#iconpreview").src = iconURL;
         document.querySelector("#sgdbicons").close();
+    }
+
+    function crankPlatform(event) {
+        let icon = event.target;
+        let platformInput = event.target.parentNode.parentNode.querySelector(`input[name="executable_platform_${icon.id.split("_picon_")[1]}`)
+        let nextPlatformIndex = platformOrder.indexOf(platformInput.value) + 1
+        let nextPlatform = nextPlatformIndex !== 0 ? nextPlatformIndex < platformOrder.length ? platformOrder[nextPlatformIndex] : platformOrder[0] : platformOrder[0];
+
+        icon.src = `/icons/platforms/${nextPlatform}.png`;
+        platformInput.value = nextPlatform;
     }
 
     document.addEventListener("DOMContentLoaded", function() {

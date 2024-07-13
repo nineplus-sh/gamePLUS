@@ -111,7 +111,7 @@ async function processGame(game, fields, files) {
         }).toBuffer()
     }
 
-    game.icon = iconData;
+    if(iconData) game.icon = iconData;
     game.name = fields.gamename[0];
     game.executables = []
 
