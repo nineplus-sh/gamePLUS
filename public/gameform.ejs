@@ -40,7 +40,7 @@
 
 <form method="post" enctype="multipart/form-data">
     <img id="iconpreview" src="<%= game ? `/game/${game._id}/icon` : "/placeholder.png" %>" style="float: left; margin-right: 1em;" width="96" height="96">
-    <h2><img src="/icons/textfield_rename.png"> Basic information</h2>
+    <h2>Basic information</h2>
     <label><img src="/icons/define_name.png"> Game name: <input type="text" name="gamename" required value="<%= game?.name %>"></label><br>
     <label><img src="/icons/picture.png"> Game icon: <input type="file" name="icon" accept="image/png, image/vnd.microsoft.icon" onchange="renderImage()"></label>
     <input type="hidden" name="iconurl">
