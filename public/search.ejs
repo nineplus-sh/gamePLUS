@@ -59,5 +59,31 @@
             </a>
         <% } %>
         <% if(find.length === 0) { %> <p>gamePLUS isn't tracking any game like that ;~;<br>If you're sure you spelled it right, now's your chance to submit it! :3</p> <% } %>
+
+        <script src="https://youtrack.litdevs.org/static/simplified/form/form-entry.js?auto=false"></script>
+        <div style="position: fixed; bottom: 20px; right: 20px;"></div>
+        <script>
+            YTFeedbackForm.renderFeedbackButton(
+                document.currentScript.previousElementSibling,
+                {backendURL: 'https://youtrack.litdevs.org', formUUID: '1f7dda6d-f041-44d3-a5f4-0f93df0168c7', theme: 'light', language: 'en'}
+            );
+            YTFeedbackForm.getClientJSApi('1f7dda6d-f041-44d3-a5f4-0f93df0168c7').then(async form => {
+                <% if(find.length === 0) { %>
+                    form.setBlockValue('summary', `Missing ${new URLSearchParams(window.location.search).get("game")}`);
+                    form.setBlockValue('description', "Replace this text with a link to the game's Steam page.\n\nIf it doesn't have one, replace this text with the name of the executable (game.exe) and attach an icon for it. Make sure it's the game and not a launcher.");
+                <% } %>
+
+                const requestType = form.getBlocks().find(b => b.title === 'Request type');
+                form.setBlockValue(
+                    requestType.title,
+                    (await form.getBlockValues(requestType.id)).find(b => b.name === 'Feedback')
+                );
+                /*const affectedApp = form.getBlocks().find(b => b.title === 'Affected application');
+                form.setBlockValue(
+                    affectedApp.title,
+                    (await form.getBlockValues(affectedApp.id)).find(b => b.name === 'gamePLUS')
+                );*/
+            })
+        </script>
     </body>
 </html>
