@@ -21,8 +21,14 @@ require('dotenv').config();
 app.use(cookieParser());
 app.use((req, res, next) => {
     if (req.cookies.admin === process.env.ADMIN_PASSWORD) req.admin = true;
+    res.set("tdm-policy", "https://www.nineplus.sh/legal/tdm.json")
+    res.set("tdm-reservation", "1")
+    res.set("x-robots-tag", "noai")
     next()
 })
+
+app.get('/.well-known/tdmrep.json', (req, res) => {res.redirect("https://www.nineplus.sh/.well-known/tdmrep.json"})
+app.get('/robots.txt', (req, res) => {res.redirect("https://www.nineplus.sh/robots.txt"})
 
 const GameSchema = new Schema({
     name: String,
