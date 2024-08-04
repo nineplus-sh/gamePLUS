@@ -27,8 +27,8 @@ app.use((req, res, next) => {
     next()
 })
 
-app.get('/.well-known/tdmrep.json', (req, res) => {res.redirect("https://www.nineplus.sh/.well-known/tdmrep.json"})
-app.get('/robots.txt', (req, res) => {res.redirect("https://www.nineplus.sh/robots.txt"})
+app.get('/.well-known/tdmrep.json', (req, res) => {res.redirect("https://www.nineplus.sh/.well-known/tdmrep.json")})
+app.get('/robots.txt', (req, res) => {res.redirect("https://www.nineplus.sh/robots.txt")})
 
 const GameSchema = new Schema({
     name: String,
