@@ -1,0 +1,72 @@
+<html lang="en">
+    <head>
+        <title>gamePLUS</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <style>
+            html {
+                font-family: sans-serif;
+            }
+            .game {
+                display: flex;
+                text-decoration: none;
+                color: black;
+                width: 20em;
+                height: 48px;
+
+                padding: 0.5em;
+                margin-bottom: 1em;
+                border-radius: 5px;
+                background-color: #eee;
+                align-items: center;
+            }
+
+            .logo {
+                max-width: 48px;
+                max-height: 48px;
+            }
+            .title {
+                margin-left: 1em;
+            }
+
+            .supported {
+                color: green;
+            }
+            .unsupported {
+                color: red;
+            }
+            .arguments {
+                font-size: smaller;
+            }
+        </style>
+
+        <script src="https://cdn.jsdelivr.net/npm/iconify-icon@2.1.0/dist/iconify-icon.min.js"></script>
+        <meta name="robots" content="noindex, nofollow" />
+
+        <script>
+            async function deleteSuggest(event, id) {
+                event.preventDefault();
+                await fetch(`/suggestions/${id}`, {
+                    method: "DELETE"
+                })
+                document.querySelector(`#s_${id}`).remove();
+            }
+        </script>
+    </head>
+    <body>
+        <h2>Suggestions</h2>
+        <p>There are <%= suggestions.length %> pending suggestions:</p>
+        <p><b>RIGHT CLICKING DELETES A SUGGESTION!</b></p>
+        <% for (let suggestion of suggestions) { %>
+            <a id="s_<%= suggestion._id %>" href="/create?executable=<%= suggestion.executable %>&arguments=<%= suggestion.arguments %>&platform=<%= suggestion.platform %>&suggestion=<%= suggestion._id %>" class="game" oncontextmenu="deleteSuggest(event, '<%= suggestion._id %>')">
+                <p class="title">
+                    <b><%= suggestion.executable %></b><br>
+                    <span class="arguments"><%= suggestion.arguments %></span>
+
+                    <iconify-icon icon="simple-icons:windows11" width="24" class="<%= suggestion.platform === "win32" ? 'supported' : 'unsupported' %>"></iconify-icon>
+                    <iconify-icon icon="file-icons:finder" width="24" class="<%= suggestion.platform === "darwin" ? 'supported' : 'unsupported' %>"></iconify-icon>
+                    <iconify-icon icon="fa6-brands:linux" width="24" class="<%= suggestion.platform === "linux" ? 'supported' : 'unsupported' %>"></iconify-icon>
+                </p>
+            </a>
+        <% } %>
+    </body>
+</html>

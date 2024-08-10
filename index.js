@@ -1,3 +1,4 @@
+const rateLimit = require("express-rate-limit")
 const express = require('express')
 const app = express()
 const cors = require('cors');
@@ -13,6 +14,7 @@ const steamClient = new nodeSteam();
 const sharp = require("sharp");
 
 const port = 4146
+app.use(express.json());
 app.use(express.static('public/resources'));
 app.set('views', join(__dirname, "public"));
 app.set('view engine', 'ejs');
@@ -37,6 +39,12 @@ const GameSchema = new Schema({
 });
 GameSchema.index({name: 'text'});
 const Game = mongoose.model('Game', GameSchema);
+const SuggestionSchema = new Schema({
+    executable: String,
+    arguments: String,
+    platform: String
+});
+const Suggestion = mongoose.model('Suggestion', SuggestionSchema);
 
 app.get('/', async (req, res) => {
     const graphData = await Game.aggregate([
@@ -98,6 +106,10 @@ app.get('/create', (req, res) => {
 async function processGame(game, fields, files) {
     let iconData;
     let iconType;
+
+    if(fields.suggestion_id[0]) {
+        await Suggestion.findByIdAndDelete(fields.suggestion_id[0])
+    }
 
     if(files.icon[0].size > 0) {
         iconData = fs.readFileSync(files.icon[0].path);
@@ -187,6 +199,7 @@ app.post('/game/:id/edit', async (req, res) => {
 
 app.get('/game/:id/icon', async (req, res) => {
     const game = await Game.findById(req.params.id).exec();
+    if(!game) return res.status(404);
 
     res.contentType('image/png');
     res.set("Content-Disposition", "inline;");
@@ -235,6 +248,31 @@ app.get('/steam/:search', async (req, res) => {
         sgdbUrl: `https://steamgriddb.com/game/${searchResult.id}/icons`,
         steamAppId: steamAppId
     })
+})
+
+const suggestLimit = rateLimit({
+    windowMs: 60 * 1000,
+    limit: 5,
+    standardHeaders: true,
+    legacyHeaders: false,
+})
+app.post('/api/suggest', suggestLimit, async (req, res) => {
+    let suggestion = new Suggestion();
+    suggestion.executable = req.body.executable;
+    suggestion.arguments = req.body.arguments;
+    suggestion.platform = req.body.platform;
+    await suggestion.save();
+    res.send(200);
+});
+
+app.get('/suggestions', async (req, res) => {
+    if (!req.admin) return res.redirect("/");
+    res.render("suggestions", {suggestions: await Suggestion.find({}).exec()})
+})
+app.delete('/suggestions/:id', async (req, res) => {
+    if (!req.admin) return res.sendStatus(999);
+    await Suggestion.findByIdAndDelete(req.params.id);
+    res.send(200);
 })
 
 async function startApp() {

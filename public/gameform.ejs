@@ -39,6 +39,8 @@
 </style>
 
 <form method="post" enctype="multipart/form-data">
+    <input type='hidden' name='suggestion_id'>
+
     <img id="iconpreview" src="<%= game ? `/game/${game._id}/icon` : "/placeholder.png" %>" style="float: left; margin-right: 1em;" width="96" height="96">
     <h2>Basic information</h2>
     <label><img src="/icons/define_name.png"> Game name: <input type="text" name="gamename" required value="<%= game?.name %>"></label><br>
@@ -229,7 +231,14 @@
     }
 
     document.addEventListener("DOMContentLoaded", function() {
-        <% if (!game) { %> addExecutable(); <% } %>
+        <% if (!game) { %>
+        let params = new URL(document.location.toString()).searchParams;
+        document.querySelector("[name='suggestion_id']").value = params.get("suggestion");
+        addExecutable(null, {
+            name: params.get("executable"),
+            arguments: params.get("arguments"),
+            platform: params.get("platform")
+        }); <% } %>
 
         document.querySelector("#executablearea").addEventListener('mousedown', function(e) {
             if (e.button === 1 && e.target?.getAttribute("gp-depot")) {
