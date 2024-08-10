@@ -257,6 +257,7 @@ const suggestLimit = rateLimit({
     standardHeaders: true,
     legacyHeaders: false,
 })
+app.options('/api/suggest', cors({allowedHeaders:["Content-Type"]}))
 app.post('/api/suggest', cors({allowedHeaders:["Content-Type"]}), suggestLimit, async (req, res) => {
     let suggestion = new Suggestion();
     suggestion.executable = req.body.executable;
