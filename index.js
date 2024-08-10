@@ -16,6 +16,7 @@ const sharp = require("sharp");
 const port = 4146
 app.use(express.json());
 app.use(express.static('public/resources'));
+app.set('trust proxy', 1);
 app.set('views', join(__dirname, "public"));
 app.set('view engine', 'ejs');
 require('dotenv').config();
@@ -262,7 +263,7 @@ app.post('/api/suggest', suggestLimit, async (req, res) => {
     suggestion.arguments = req.body.arguments;
     suggestion.platform = req.body.platform;
     await suggestion.save();
-    res.send(200);
+    res.sendStatus(200);
 });
 
 app.get('/suggestions', async (req, res) => {
@@ -272,7 +273,7 @@ app.get('/suggestions', async (req, res) => {
 app.delete('/suggestions/:id', async (req, res) => {
     if (!req.admin) return res.sendStatus(999);
     await Suggestion.findByIdAndDelete(req.params.id);
-    res.send(200);
+    res.sendStatus(200);
 })
 
 async function startApp() {
