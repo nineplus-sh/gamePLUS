@@ -121,13 +121,7 @@ async function processGame(game, fields, files) {
         iconType = iconRequest.headers.get("content-type");
     }
     if(iconType === "image/x-icon" || iconType === "image/vnd.microsoft.icon") {
-        iconData = await icoToPng(iconData, 128)
-    } else if(iconType === "image/png") {
-        iconData = await sharp(iconData).resize({
-            width: 128,
-            height: 128,
-            withoutEnlargement: true
-        }).toBuffer()
+        iconData = await icoToPng(iconData, 512)
     }
 
     if(iconData) game.icon = iconData;
@@ -204,7 +198,11 @@ app.get('/game/:id/icon', async (req, res) => {
 
     res.contentType('image/png');
     res.set("Content-Disposition", "inline;");
-    res.status(200).send(game.icon);
+    res.status(200).send(
+        req.query.size ?
+            await sharp(game.icon).resize(parseInt(req.query.size), null, {withoutEnlargement: true}).toBuffer()
+            : game.icon
+    );
 });
 
 app.get('/games', async (req, res) => {
