@@ -95,7 +95,7 @@ app.get('/', async (req, res) => {
         yLabels.push(data.y);
     })
 
-    const newestGames = await Game.find().sort({ _id: -1 }).limit(18).exec();
+    const newestGames = await Game.find().select("-icon").sort({ _id: -1 }).limit(18).exec();
     res.render('index', {isAdmin: req.admin, xLabels: JSON.stringify(xLabels), yLabels: JSON.stringify(yLabels), newestGames});
 });
 
@@ -163,20 +163,20 @@ app.post('/create', (req, res) => {
 });
 
 app.get('/search', async (req, res) => {
-    const find = await Game.find({$text: {$search: req.query.game}}).exec();
+    const find = await Game.find({$text: {$search: req.query.game}}).select("-icon").exec();
     res.render('search', {find});
 });
 
 app.get('/game/:id', async (req, res) => {
     if(!mongoose.isValidObjectId(req.params.id)) return res.sendStatus(404);
-    const game = await Game.findById(req.params.id).exec();
+    const game = await Game.findById(req.params.id).select("-icon").exec();
     res.render('game', {game, isAdmin: req.admin, isNotable: req.query.created});
 });
 
 app.get('/game/:id/edit', async (req, res) => {
     if (!req.admin) return res.redirect("/");
 
-    const game = await Game.findById(req.params.id);
+    const game = await Game.findById(req.params.id).select("-icon").exec();
     if (!game) return res.status(404).send('Game not found');
     res.render('gameedit', { game });
 });
@@ -206,10 +206,10 @@ app.get('/game/:id/icon', async (req, res) => {
 });
 
 app.get('/games', async (req, res) => {
-    res.render("allgames", {games: await Game.find({}).sort({"name": 1}).exec()})
+    res.render("allgames", {games: await Game.find({}).sort({"name": 1}).select("-icon").exec()})
 });
 app.get('/api/games', cors(), async (req, res) => {
-    const games = await Game.find({});
+    const games = await Game.find({}).select("-icon").exec();
     res.json(games.map(g => ({ _id: g._id, name: g.name, executables: g.executables })));
 })
 
