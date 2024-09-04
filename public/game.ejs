@@ -32,7 +32,7 @@
         <% if (isNotable && isAdmin) { %>
             <h1><a href="/create">CREATE NEW GAME</a></h1><hr>
         <% } %>
-        <h1><img src="/game/<%= game._id %>/icon" width="48" height="48"> <%= game.name %></h1>
+        <h1><img src="/game/<%= game._id %>/icon?size=48" width="48" height="48"> <%= game.name %></h1>
         <p>This game is detected when one of these executables are running:</p>
         <% for (let executable of game.executables) { %>
             <p>

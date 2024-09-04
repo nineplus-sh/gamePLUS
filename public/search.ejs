@@ -35,6 +35,15 @@
             .unsupported {
                 color: red;
             }
+
+            .errorwrap {
+                display: flex;
+                gap: 1em;
+                max-width: 500px;
+            }
+            .errortextwrap h1 {
+                margin: 0;
+            }
         </style>
 
         <script src="https://cdn.jsdelivr.net/npm/iconify-icon@2.1.0/dist/iconify-icon.min.js"></script>
@@ -58,7 +67,15 @@
                 </p>
             </a>
         <% } %>
-        <% if(find.length === 0) { %> <p>gamePLUS isn't tracking any game like that ;~;<br>If you're sure you spelled it right, now's your chance to submit it! :3</p> <% } %>
+        <% if(find.length === 0) { %> <div class="errorwrap">
+            <img src="/idunno.png" width="128" height="128">
+            <div class="errortextwrap">
+                <h1>Never heard of it!</h1>
+                <div>
+                    If you'd like, you can <a href="/learn#submit-edits">submit the game</a>.
+                </div>
+            </div>
+        </div> <% } %>
 
         <script src="https://youtrack.litdevs.org/static/simplified/form/form-entry.js?auto=false"></script>
         <div style="position: fixed; bottom: 20px; right: 20px;"></div>

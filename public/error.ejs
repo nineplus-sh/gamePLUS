@@ -1,0 +1,19 @@
+<style>
+    .errorwrap {
+        display: flex;
+        gap: 1em;
+        max-width: 500px;
+    }
+    .errortextwrap h1 {
+        margin: 0;
+    }
+</style>
+<div class="errorwrap">
+    <img src="<%= image %>" width="128" height="128">
+    <div class="errortextwrap">
+        <h1><%= title %></h1>
+        <div>
+            <%- description %>
+        </div>
+    </div>
+</div>

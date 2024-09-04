@@ -36,15 +36,20 @@
     .betakey.isReal {
         display: inline;
     }
+
+    #iconpreview.pixelart {
+        image-rendering: pixelated;
+    }
 </style>
 
 <form method="post" enctype="multipart/form-data">
     <input type='hidden' name='suggestion_id'>
 
-    <img id="iconpreview" src="<%= game ? `/game/${game._id}/icon` : "/placeholder.png" %>" style="float: left; margin-right: 1em;" width="96" height="96">
+    <img id="iconpreview" class="<%= game?.iconnn === true ? "pixelart" : null %>" src="<%= game ? `/game/${game._id}/icon` : "/placeholder.png" %>" style="float: left; margin-right: 1em;" width="128" height="128">
     <h2>Basic information</h2>
     <label><img src="/icons/define_name.png"> Game name: <input type="text" name="gamename" required value="<%= game?.name %>"></label><br>
-    <label><img src="/icons/picture.png"> Game icon: <input type="file" name="icon" accept="image/png, image/vnd.microsoft.icon" onchange="renderImage()"></label>
+    <label><img src="/icons/picture.png"> Game icon: <input type="file" name="icon" accept="image/png, image/vnd.microsoft.icon" onchange="renderImage()"></label><br>
+    <label><input type="checkbox" name="iconnn" <%= game?.iconnn === true ? "checked" : null %> onchange="flipPixelArt(this.checked)"> Icon is pixel art</label>
     <input type="hidden" name="iconurl">
     <h2 style="margin-bottom: 0;"><img src="/icons/disk_multiple.png"> Executables <button onclick="addExecutable(event)"><img src="/icons/disk--plus.png"></button> <button onclick="autofillExecutables(event)"><img src="/icons/box-share.png"></button></h2>
     <table id="executablearea">
@@ -240,6 +245,14 @@
 
         icon.src = `/icons/platforms/${nextPlatform}.png`;
         platformInput.value = nextPlatform;
+    }
+
+    function flipPixelArt(isPixelArt) {
+        if(isPixelArt) {
+            document.querySelector("#iconpreview").classList.add("pixelart");
+        } else {
+            document.querySelector("#iconpreview").classList.remove("pixelart");
+        }
     }
 
     document.addEventListener("DOMContentLoaded", function() {

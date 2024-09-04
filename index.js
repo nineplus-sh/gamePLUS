@@ -36,6 +36,7 @@ app.get('/robots.txt', (req, res) => {res.redirect("https://www.nineplus.sh/robo
 const GameSchema = new Schema({
     name: String,
     icon: Buffer,
+    iconnn: Boolean,
     executables: Array
 });
 GameSchema.index({name: 'text'});
@@ -46,6 +47,24 @@ const SuggestionSchema = new Schema({
     platform: String
 });
 const Suggestion = mongoose.model('Suggestion', SuggestionSchema);
+
+function visualError(code, res) {
+    if(code === 404) {
+        res.status(404).render("error", {"image": "/idunno.png", "title": "I ate it", "description": ""});
+    } else if (code === 403) {
+        res.status(403).render("error", {"image": "/authenticate.png", "title": "Password required", "description": `
+            <form onsubmit="event.preventDefault();document.cookie=\`admin=\${mysupersecretpassword.value}\`;document.location.reload()">
+                <input type="password" id="mysupersecretpassword">
+            </form>
+        `});
+    } else if (code === 500) {
+        res.status(500).render("error", {"image": "/crashplus.png", "title": "Server puked", "description": ""});
+    }
+}
+
+app.get("/error", (req,res) => {
+    throw new Error("Wah!")
+})
 
 app.get('/', async (req, res) => {
     const graphData = await Game.aggregate([
@@ -100,7 +119,7 @@ app.get('/', async (req, res) => {
 });
 
 app.get('/create', (req, res) => {
-    if(!req.admin) res.redirect("/");
+    if(!req.admin) return visualError(403, res);
     res.render('gamecreate');
 });
 
@@ -126,6 +145,7 @@ async function processGame(game, fields, files) {
 
     if(iconData) game.icon = iconData;
     game.name = fields.gamename[0];
+    game.iconnn = !!(fields.iconnn && fields.iconnn[0] === "on");
     game.executables = []
 
     Object.keys(fields).forEach(entry => {
@@ -168,13 +188,14 @@ app.get('/search', async (req, res) => {
 });
 
 app.get('/game/:id', async (req, res) => {
-    if(!mongoose.isValidObjectId(req.params.id)) return res.sendStatus(404);
+    if(!mongoose.isValidObjectId(req.params.id)) return visualError(404, res);
     const game = await Game.findById(req.params.id).select("-icon").exec();
+    if(!game) return visualError(404, res);
     res.render('game', {game, isAdmin: req.admin, isNotable: req.query.created});
 });
 
 app.get('/game/:id/edit', async (req, res) => {
-    if (!req.admin) return res.redirect("/");
+    if (!req.admin) return visualError(403, res);
 
     const game = await Game.findById(req.params.id).select("-icon").exec();
     if (!game) return res.status(404).send('Game not found');
@@ -192,17 +213,26 @@ app.post('/game/:id/edit', async (req, res) => {
     })
 });
 
-app.get('/game/:id/icon', async (req, res) => {
+app.get('/game/:id/icon', async (req, res, next) => {
     const game = await Game.findById(req.params.id).exec();
     if(!game) return res.status(404);
 
     res.contentType('image/png');
     res.set("Content-Disposition", "inline;");
-    res.status(200).send(
-        req.query.size ?
-            await sharp(game.icon).resize(parseInt(req.query.size), null, {withoutEnlargement: true}).toBuffer()
-            : game.icon
-    );
+
+    try {
+        res.status(200).send(
+            req.query.size ?
+                await sharp(game.icon).resize(parseInt(req.query.size), null, {
+                    withoutEnlargement: true,
+                    kernel: req.query.pixel || game.iconnn ? "nearest" : "lanczos3"
+                }).toBuffer()
+                : game.icon
+        );
+    } catch(err) {
+        console.error(err);
+        res.status(500).sendFile(__dirname + "/public/resources/fallback.png");
+    }
 });
 
 app.get('/games', async (req, res) => {
@@ -266,7 +296,7 @@ app.post('/api/suggest', cors({allowedHeaders:["Content-Type"]}), suggestLimit, 
 });
 
 app.get('/suggestions', async (req, res) => {
-    if (!req.admin) return res.redirect("/");
+    if (!req.admin) return visualError(403, res);
     res.render("suggestions", {suggestions: await Suggestion.find({}).exec()})
 })
 app.delete('/suggestions/:id', async (req, res) => {
@@ -275,6 +305,13 @@ app.delete('/suggestions/:id', async (req, res) => {
     res.sendStatus(200);
 })
 
+app.all('*', (req, res) => {
+    return visualError(404, res);
+})
+app.use((err, req, res, next) => {
+    console.error(err.stack);
+    return visualError( 500, res);
+})
 async function startApp() {
     await mongoose.connect(process.env.MONGODB_URL);
     console.log("Connected to database")
