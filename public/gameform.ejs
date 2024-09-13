@@ -216,6 +216,9 @@
         } else if (/.*\.app\/|\.app$/.test(e.target.value)) {
             picon.src = "/icons/platforms/darwin.png";
             platform.value = "darwin";
+        } else if(e.target.value.endsWith(".x86") || e.target.value.endsWith(".x86_64")) {
+            picon.src = "/icons/platforms/linux.png";
+            platform.value = "linux";
         }
 
         if(e.target.getAttribute("gp-problematic") && !isBadExecutable(e.target.value)) {
