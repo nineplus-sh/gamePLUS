@@ -64,7 +64,7 @@ function visualError(code, res) {
     }
 }
 app.use(async (req, res, next) => {
-    res.locals.showers = await Game.find().select("-icon").sort({_id: -1}).limit(8).exec();
+    res.locals.showers = await Game.find().select("-icon").sort({_id: -1}).limit(9).exec();
 
     const quotes = [
         `“average person plays more than 5 different games every year” factoid actualy just statistical error. average person plays less. GamePLUS Georg, who lives in cave & plays all his ${await Game.countDocuments({})} games, is an outlier adn should not have been counted`
