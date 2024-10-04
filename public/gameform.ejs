@@ -96,7 +96,8 @@
         "mac_runner",
         "exefile.exe",
         "shootergame.exe",
-        "shootergame"
+        "shootergame",
+        "start_protected_game.exe"
     ]
     function isBadExecutable(name) {
         if(name.startsWith("link2ea://") || name.endsWith(".app") || name.endsWith(".sh") || name.endsWith(".bat") || badExecutables.includes(name)) return true;
