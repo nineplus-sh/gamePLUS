@@ -1,0 +1,26 @@
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="/style.css">
+        <meta name="robots" content="noindex, nofollow, noai" />
+        <%-defineContent('head')%>
+    </head>
+    <body>
+        <header>
+            <a href="/"><div id="headertab"><img src="/logo.png" alt="gamePLUS"></div></a>
+            <div id="showers" aria-hidden="true">
+                <% for (let game of showers) { %>
+                    <div class="shower"><div class="beam"></div><a href="/game/<%= game._id %>"><img src="/game/<%= game._id %>/icon?size=48" title="<%= game.name %>" width="48" height="48"></a></div>
+                <% } %>
+            </div>
+        </header>
+        <main>
+            <%- body %>
+        </main>
+        <footer>
+            <span style="margin-left: 1em"><%- quote %></span>
+            <a href="https://www.nineplus.sh"><img class="ninemark" src="https://www.nineplus.sh/img/wordmark.svg" alt="ninePLUS"></a>
+        </footer>
+    </body>
+</html>

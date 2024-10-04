@@ -1,0 +1,89 @@
+@import url('https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300&display=swap');
+html {
+    font-family: "Ubuntu", sans-serif;
+    background: repeating-linear-gradient(-45deg, rgba(255, 255, 255, 0.05) 0px 10px, transparent 10px 20px), linear-gradient(#5BCEFA, #F5A9B8, white);
+    background-attachment: fixed;
+    height: 100%;
+}
+code, pre {
+    font-family: "JetBrains Mono", monospace;
+}
+main {
+    background-color: white;
+    padding: 0.5em;
+    border: 2px solid black;
+    border-radius: 0 10px 0 0;
+    border-bottom: none;
+}
+header {
+    display: flex;
+    justify-content: space-between;
+    gap: 1em;
+}
+#headertab {
+    width: fit-content;
+    display: inline-block;
+    margin: 0;
+    padding: 0.2em;
+    background-color: white;
+    border-radius: 10px 10px 0 0;
+    border: 2px solid black;
+    border-bottom: none;
+    transform: translateY(2px)
+}
+body {
+    margin: 1em;
+    max-width: 50em;
+}
+footer {
+    background-color: black;
+    color: white;
+    border-radius: 0 0 10px 10px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    max-height: 3.3em;
+}
+footer .ninemark {
+    background-color: white;
+    padding: 0.5em;
+    padding-left: 1.2em;
+    padding-right: 0.3em;
+    width: 5em;
+    border: 2px black solid;
+    border-radius: 0 0 10px 0;
+    clip-path: polygon(100% 0%, 25% 0%, 1% 100%, 100% 100%);
+}
+
+#showers {
+    display: flex;
+    gap: 1em;
+    flex-grow: 1;
+    justify-content: flex-end;
+    overflow: hidden;
+}
+
+.shower {
+    display: inline-block;
+    position: relative;
+    width: 48px;
+    height: 48px;
+}
+.shower img {
+    position: relative;
+    z-index: 2;
+}
+.beam {
+    height: 10px;
+    background: linear-gradient(to right, transparent 5px, white);
+    transform: translateY(0px) translateX(-30px) rotate(45deg);
+}
+
+.shower:nth-child(odd) {
+    top: 2em;
+}
+.shower:nth-child(even) {
+    right: 0.5em;
+}

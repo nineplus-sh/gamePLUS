@@ -1,73 +1,63 @@
-<html lang="en">
-    <head>
-        <title>gamePLUS</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<% if (isNotable && isAdmin) { %>
+    <h1><a href="/create">CREATE NEW GAME</a></h1><hr>
+<% } %>
+<div style="margin-top: 0; display: flex; align-items: center; gap: 4px; font-size: 1.5em; font-weight: bold"><img src="/game/<%= game._id %>/icon?size=48" width="48" height="48"> <%= game.name %></div>
+<p>This game is detected when one of these executables are running:</p>
+<% for (let executable of game.executables) { %>
+    <p>
+        <img src="/icons/platforms/<%= executable.platform %>.png">
+        <code><%= executable.name %> <%= executable.arguments %></code>
+    </p>
+<% } %>
+<% if (isAdmin) { %>
+    <p><a href="/game/<%= game._id %>/edit">Edit app data</a></p>
+<% } else { %>
+    <p>See something wrong? You can use the contact form in the bottom right.</p>
+<% } %>
 
-        <meta property="og:title" content="<%= game.name %> :: gamePLUS" />
-        <meta property="og:image" content="https://gameplus.nineplus.sh/game/<%= game._id %>/icon" />
-        <meta property="og:description" content="See mappings for <%= game.name %> on gamePLUS, the executable mapping database for Quarky" />
+<script src="https://youtrack.litdevs.org/static/simplified/form/form-entry.js?auto=false"></script>
+<div style="position: fixed; bottom: 20px; right: 20px;"></div>
+<script>
+    YTFeedbackForm.renderFeedbackButton(
+        document.currentScript.previousElementSibling,
+        {backendURL: 'https://youtrack.litdevs.org', formUUID: '1f7dda6d-f041-44d3-a5f4-0f93df0168c7', theme: 'light', language: 'en'}
+    );
+    YTFeedbackForm.getClientJSApi('1f7dda6d-f041-44d3-a5f4-0f93df0168c7').then(async form => {
+        form.setBlockValue('summary', 'Wrong data for <%= game.name %>');
+        form.setBlockValue('description', `${document.location.href}\n\nDescribe the issue here...`);
 
-        <meta name="robots" content="noindex, nofollow" />
+        const requestType = form.getBlocks().find(b => b.title === 'Request type');
+        form.setBlockValue(
+            requestType.title,
+            (await form.getBlockValues(requestType.id)).find(b => b.name === 'Feedback')
+        );
+        /*const affectedApp = form.getBlocks().find(b => b.title === 'Affected application');
+        form.setBlockValue(
+            affectedApp.title,
+            (await form.getBlockValues(affectedApp.id)).find(b => b.name === 'gamePLUS')
+        );*/
+    })
+</script>
 
-        <style>
-            html {
-                font-family: sans-serif;
-            }
-        </style>
+<%- contentFor('head') %>
+<title>gamePLUS</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-        <% if (isNotable) { %>
-        <script>
-            new Audio("/sfx/game_created.wav").play();
-            window.cubismNoMouth = true;
-            window.cubismColonO = true;
-            window.addEventListener("cubismready", function() {
-                window.cubismMotion("/cubism/hiyori_pro/motion/hiyori_m03.motion3.json")
-            })
-        </script>
-        <script src="/cubism/cubismcore.js"></script>
-        <script src="/cubism/cubism.js"></script>
-        <% } %>
-    </head>
-    <body>
-        <% if (isNotable && isAdmin) { %>
-            <h1><a href="/create">CREATE NEW GAME</a></h1><hr>
-        <% } %>
-        <h1><img src="/game/<%= game._id %>/icon?size=48" width="48" height="48"> <%= game.name %></h1>
-        <p>This game is detected when one of these executables are running:</p>
-        <% for (let executable of game.executables) { %>
-            <p>
-                <img src="/icons/platforms/<%= executable.platform %>.png">
-                <code><%= executable.name %> <%= executable.arguments %></code>
-            </p>
-        <% } %>
-        <% if (isAdmin) { %>
-            <p><a href="/game/<%= game._id %>/edit">Edit app data</a></p>
-        <% } else { %>
-            <p>See something wrong? You can use the contact form in the bottom right.</p>
-        <% } %>
+<meta property="og:title" content="<%= game.name %> :: gamePLUS" />
+<meta property="og:image" content="https://gameplus.nineplus.sh/game/<%= game._id %>/icon" />
+<meta property="og:description" content="See mappings for <%= game.name %> on gamePLUS, the executable mapping database for Quarky" />
 
-        <script src="https://youtrack.litdevs.org/static/simplified/form/form-entry.js?auto=false"></script>
-        <div style="position: fixed; bottom: 20px; right: 20px;"></div>
-        <script>
-            YTFeedbackForm.renderFeedbackButton(
-                document.currentScript.previousElementSibling,
-                {backendURL: 'https://youtrack.litdevs.org', formUUID: '1f7dda6d-f041-44d3-a5f4-0f93df0168c7', theme: 'light', language: 'en'}
-            );
-            YTFeedbackForm.getClientJSApi('1f7dda6d-f041-44d3-a5f4-0f93df0168c7').then(async form => {
-                form.setBlockValue('summary', 'Wrong data for <%= game.name %>');
-                form.setBlockValue('description', `${document.location.href}\n\nDescribe the issue here...`);
+<meta name="robots" content="noindex, nofollow" />
 
-                const requestType = form.getBlocks().find(b => b.title === 'Request type');
-                form.setBlockValue(
-                    requestType.title,
-                    (await form.getBlockValues(requestType.id)).find(b => b.name === 'Feedback')
-                );
-                /*const affectedApp = form.getBlocks().find(b => b.title === 'Affected application');
-                form.setBlockValue(
-                    affectedApp.title,
-                    (await form.getBlockValues(affectedApp.id)).find(b => b.name === 'gamePLUS')
-                );*/
-            })
-        </script>
-    </body>
-</html>
+<% if (isNotable) { %>
+    <script>
+        new Audio("/sfx/game_created.wav").play();
+        window.cubismNoMouth = true;
+        window.cubismColonO = true;
+        window.addEventListener("cubismready", function() {
+            window.cubismMotion("/cubism/hiyori_pro/motion/hiyori_m03.motion3.json")
+        })
+    </script>
+    <script src="/cubism/cubismcore.js"></script>
+    <script src="/cubism/cubism.js"></script>
+<% } %>

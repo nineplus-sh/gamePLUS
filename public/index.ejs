@@ -1,82 +1,64 @@
-<html lang="en">
-    <head>
-        <title>gamePLUS</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/moment@2.29.1/moment.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-moment@1.0.1/dist/chartjs-adapter-moment.min.js"></script>
+<p>
+    gamePLUS is the game detection database for Quarky, the world's silliest chat app.<br>
+    <a href="/learn">Learn more about gamePLUS</a> or search for games in the database below.
+</p>
 
-        <style>
-            html {
-                font-family: sans-serif;
-            }
-        </style>
+<div><canvas id="myChart"></canvas></div>
+<form action="/search" method="get" style="float: right;">
+    <input id="gamename" name="game" placeholder="Type a game name...">
+    <input type="submit" value="Search">
+</form>
 
-        <script>
-            document.addEventListener("DOMContentLoaded", function() {
-                const ctx = document.getElementById('myChart');
+<hr>
 
-                new Chart(ctx, {
-                    type: 'line',
-                    data: {
-                        labels: <%- xLabels %>,
-                        datasets: [{
-                            label: 'Games',
-                            data: <%- yLabels %>,
-                            borderWidth: 1,
-                            stepped: true
-                        }]
+<p><a href="/create">Create new app</a></p>
+
+<%- contentFor('head') %>
+<title>gamePLUS!</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/moment@2.29.1/moment.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-moment@1.0.1/dist/chartjs-adapter-moment.min.js"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const ctx = document.getElementById('myChart');
+
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: <%- xLabels %>,
+                datasets: [{
+                    label: 'Games',
+                    data: <%- yLabels %>,
+                    borderWidth: 1,
+                    stepped: true
+                }]
+            },
+            options: {
+                scales: {
+                    x: {
+                        type: 'time',
+                        time: {
+                            unit: 'day',
+                            tooltipFormat: 'YYYY-MM-DD'
+                        },
+                        ticks: {
+                            source: 'auto'
+                        }
                     },
-                    options: {
-                        scales: {
-                            x: {
-                                type: 'time',
-                                time: {
-                                    unit: 'day',
-                                    tooltipFormat: 'YYYY-MM-DD'
-                                },
-                                ticks: {
-                                    source: 'auto'
-                                }
-                            },
-                            y: {
-                                ticks: {
-                                    stepSize: 1
-                                }
-                            }
-                        },
-                        plugins: {
-                            legend: {
-                                display: false
-                            },
-                        },
-                        responsive: true,
-                        maintainAspectRatio: false
+                    y: {
+                        ticks: {
+                            stepSize: 1
+                        }
                     }
-                });
-            })
-        </script>
-    </head>
-    <body>
-        <h1 style="margin-top: 0;"><img src="/logo.png" alt="gamePLUS"></h1>
-        <p>gamePLUS is the game detection database for Quarky, the world's silliest chat app.<br><a href="/learn">Learn more about gamePLUS</a> or search for games in the database below.</p>
-        <div style="max-width: 40em; height: 10em;"><canvas id="myChart"></canvas>
-
-        <form action="/search" method="get" style="float: right;">
-            <input id="gamename" name="game" placeholder="Type a game name...">
-            <input type="submit" value="Search">
-        </form>
-
-        <hr>
-
-        <h2 style="margin-bottom: 0;">Latest games <span style="font-size: small">(<a href="/games">view all</a>)</span></h2>
-        <% for (let game of newestGames) { %>
-            <a href="/game/<%= game._id %>" class="game"><img src="/game/<%= game._id %>/icon?size=64" alt="<%= game.name %>" title="<%= game.name %>" width="64" height="64"></a>
-        <% } %>
-        <% if (!isAdmin) { %>
-            <p><a href="#" style="font-size: 0.7em" onclick="document.cookie = `admin=${prompt('Please enter the password')}`;document.location.reload()">Admin-only app management</a></p>
-        <% } else { %>
-            <p><a href="/create">Create new app</a></p>
-        <% } %>
-    </body>
-</html>
+                },
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                },
+                responsive: true,
+                maintainAspectRatio: false
+            }
+        });
+    })
+</script>

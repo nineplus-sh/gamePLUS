@@ -1,103 +1,90 @@
-<html lang="en">
-    <head>
-        <title>gamePLUS</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-        <style>
-            html {
-                font-family: sans-serif;
-            }
-
-            .gaming {
-                height: 160px;
-                width: 284px;
-                background: white;
-                padding: 0.5em;
-                color: black;
-                border: 2px solid black;
-            }
-            .gamewrap {
-                display: flex;
-                flex-direction: row;
-            }
-            .gamedata {
-                padding-right: 1em;
-                padding-left: 1em;
-                margin: auto 0;
-                white-space: nowrap;
-                overflow: hidden;
-                text-overflow: ellipsis;
-            }
-            .gamedata b {
-                display: block;
-                max-height: 3em;
-                text-overflow: ellipsis;
-                overflow: hidden;
-                white-space: wrap;
-            }
-            .gamedata p {
-                margin: 0;
-            }
-            .gamelogo {
-                width: 96px;
-                height: 96px;
-            }
-
-            .gamedisclaim {
-                font-size: small;
-                font-style: italic;
-            }
-
-            @counter-style spilled {
-                symbols: 🐈 🧃 🫗 😿 🧹;
-                suffix: " ";
-            }
-            .your-fates {
-                list-style: spilled;
-            }
-            .your-fates li {
-                margin: 10px 0;
-            }
-        </style>
-    </head>
-    <body>
-        <h1 style="margin: 0;"><img src="/logo.png" alt="gamePLUS"></h1><a href="/">← Go back to home page</a><hr>
-
-        <h2 id="what-is">What is gamePLUS?</h2>
-        <p>At ninePLUS, we're building a chat app called <a href="https://www.nineplus.sh/quarky">Quarky</a>.<br><a href="https://support.discord.com/hc/en-us/articles/7931156448919-Activity-Status-Recent-Activity">Similarly to Discord</a>, Quarky can display what game you're playing on your profile.</p>
-        <p>We needed a way to detect what games are running, and this is that.<br>gamePLUS stores the icon, executables (<code><%= sampleGame.executables[0].name %></code>) and name (<i><%= sampleGame.name %></i>) for games.</p>
-        <p>This way, you can see exactly what someone's playing:</p>
-        <div class="gaming">
-            <p>Playing a game</p>
-            <div class="gamewrap">
-                <img class="gamelogo" src="/game/<%= sampleGame._id %>/icon">
-                <div class="gamedata">
-                    <b><%= sampleGame.name %></b>
-                    <p>12:34 elapsed</p>
-                </div>
-            </div>
+<h2 id="what-is">What is gamePLUS?</h2>
+<p>At ninePLUS, we're building a chat app called <a href="https://www.nineplus.sh/quarky">Quarky</a>.<br><a href="https://support.discord.com/hc/en-us/articles/7931156448919-Activity-Status-Recent-Activity">Similarly to Discord</a>, Quarky can display what game you're playing on your profile.</p>
+<p>We needed a way to detect what games are running, and this is that.<br>gamePLUS stores the icon, executables (<code><%= sampleGame.executables[0].name %></code>) and name (<i><%= sampleGame.name %></i>) for games.</p>
+<p>This way, you can see exactly what someone's playing:</p>
+<div class="gaming">
+    <p>Playing a game</p>
+    <div class="gamewrap">
+        <img class="gamelogo" src="/game/<%= sampleGame._id %>/icon">
+        <div class="gamedata">
+            <b><%= sampleGame.name %></b>
+            <p>12:34 elapsed</p>
         </div>
-        <p class="gamedisclaim">Game chosen at random from the <a href="/games">full list of games</a>.<br>ninePLUS does not own the rights to <%= sampleGame.name %> &mdash; for demonstrational purposes only.</p>
+    </div>
+</div>
+<p class="gamedisclaim">Game chosen at random from the <a href="/games">full list of games</a>.<br>ninePLUS does not own the rights to <%= sampleGame.name %> &mdash; for demonstrational purposes only.</p>
 
-        <img src="/juice.jpg" style="float: left; margin-right: 2em;" width="255">
-        <h2 id="submit-edits" style="margin-top: 0;">Help, help! A game is missing or being detected improperly!</h2>
-        <p>You have a few ways to submit changes to gamePLUS, so pick whatever you're the most comfortable with.</p>
-        <ul class="your-fates">
-            <li><b>RECOMMENDED FOR ADDING:</b> You can suggest games directly in <a href="https://roald.hakase.life">Quarky Desktop</a>.<br>Open the game, then go to your Quarky settings. "Playing status", then "suggest a game".<br>A list of currently running apps will appear, pick the one that looks like the game, then submit. Done!</li>
-            <li><b>RECOMMENDED FOR EDITING:</b> gamePLUS game pages (like <a href="/game/<%= sampleGame._id %>">this one</a>) have a support icon in the bottom right.<br>It will fill in the game name and link, so just replace "Describe the issue here..." with your desired change.<br>You can find game pages by using the search box on the <a href="/">home page</a>.</li>
-            <li>If you just want to send an e-mail yourself, you can go to <a href="https://www.nineplus.sh/support.html">https://www.nineplus.sh/support.html</a> or e-mail <a href="mailto:support@nineplus.sh">support@nineplus.sh</a>.</li>
-            <li>Just want it fixed right meow? Join the <a href="https://discord.gg/lit-devs-868937321402204220">LIT Devs Discord</a> and poke Hakase there, but she might be sleeping.</li>
-            <li>Hope that helps!</li>
-        </ul>
+<img src="/juice.jpg" style="float: left; margin-right: 2em;" width="255">
+<h2 id="submit-edits" style="margin-top: 0;">Help, help! A game is missing or being detected improperly!</h2>
+<p>You have a few ways to submit changes to gamePLUS, so pick whatever you're the most comfortable with.</p>
+<ul class="your-fates">
+    <li><b>RECOMMENDED FOR ADDING:</b> You can suggest games directly in <a href="https://roald.hakase.life">Quarky Desktop</a>.<br>Open the game, then go to your Quarky settings. "Playing status", then "suggest a game".<br>A list of currently running apps will appear, pick the one that looks like the game, then submit. Done!</li>
+    <li><b>RECOMMENDED FOR EDITING:</b> gamePLUS game pages (like <a href="/game/<%= sampleGame._id %>">this one</a>) have a support icon in the bottom right.<br>It will fill in the game name and link, so just replace "Describe the issue here..." with your desired change.<br>You can find game pages by using the search box on the <a href="/">home page</a>.</li>
+    <li>If you just want to send an e-mail yourself, you can go to <a href="https://www.nineplus.sh/support.html">https://www.nineplus.sh/support.html</a> or e-mail <a href="mailto:support@nineplus.sh">support@nineplus.sh</a>.</li>
+    <li>Just want it fixed right meow? Join the <a href="https://discord.gg/lit-devs-868937321402204220">LIT Devs Discord</a> and poke Hakase there, but she might be sleeping.</li>
+    <li>Hope that helps!</li>
+</ul>
 
-        <hr>
+<hr>
 
-        <h2 id="copyright">Are all assets on gamePLUS owned by ninePLUS?</h2>
-        <p>Nope! We're required to put some disclaimers regarding the assets here:</p>
-        <p>gamePLUS uses interface icons by <a href="https://p.yusukekamiyamane.com/">Yusuke Kamiyamane</a> and FatCow under the <a href="https://web.archive.org/web/20071025023654if_/http://creativecommons.org/licenses/by/3.0/legalcode">CC BY 3.0</a> license.</p>
-        <p><i>For the admin panel: </i> gamePLUS uses sample data owned and copyrighted by Live2D Inc. and <a href="https://github.com/misskey-dev/mascot-web">sample code by syuilo</a>.<br>The sample data are utilized in accordance with terms and conditions set by Live2D Inc.<br>gamePLUS itself is created at ninePLUS’ sole discretion.</p>
-        <p>All game icons and names belong to their respective owners.</p>
-        <p>The gamePLUS software and logo &copy; ninePLUS 2024. All rights reserved.</p>
-    </body>
-</html>
+<h2 id="copyright">Are all assets on gamePLUS owned by ninePLUS?</h2>
+<p>Nope! We're required to put some disclaimers regarding the assets here:</p>
+<p>gamePLUS uses interface icons by <a href="https://p.yusukekamiyamane.com/">Yusuke Kamiyamane</a> and FatCow under the <a href="https://web.archive.org/web/20071025023654if_/http://creativecommons.org/licenses/by/3.0/legalcode">CC BY 3.0</a> license.</p>
+<p><i>For the admin panel: </i> gamePLUS uses sample data owned and copyrighted by Live2D Inc. and <a href="https://github.com/misskey-dev/mascot-web">sample code by syuilo</a>.<br>The sample data are utilized in accordance with terms and conditions set by Live2D Inc.<br>gamePLUS itself is created at ninePLUS’ sole discretion.</p>
+<p>All game icons and names belong to their respective owners.</p>
+<p>The gamePLUS software and logo &copy; ninePLUS 2024. All rights reserved.</p>
+
+<%- contentFor('head')%>
+<title>What plus?</title>
+<style>
+    .gaming {
+        height: 160px;
+        width: 284px;
+        background: white;
+        padding: 0.5em;
+        color: black;
+        border: 2px solid black;
+    }
+    .gamewrap {
+        display: flex;
+        flex-direction: row;
+    }
+    .gamedata {
+        padding-right: 1em;
+        padding-left: 1em;
+        margin: auto 0;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    .gamedata b {
+        display: block;
+        max-height: 3em;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        white-space: wrap;
+    }
+    .gamedata p {
+        margin: 0;
+    }
+    .gamelogo {
+        width: 96px;
+        height: 96px;
+    }
+
+    .gamedisclaim {
+        font-size: small;
+        font-style: italic;
+    }
+
+    @counter-style spilled {
+        symbols: 🐈 🧃 🫗 😿 🧹;
+        suffix: " ";
+    }
+    .your-fates {
+        list-style: spilled;
+    }
+    .your-fates li {
+        margin: 10px 0;
+    }
+</style>

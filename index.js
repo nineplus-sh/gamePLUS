@@ -12,6 +12,7 @@ const icoToPng = require("ico-to-png");
 const nodeSteam = require("steam-user");
 const steamClient = new nodeSteam();
 const sharp = require("sharp");
+const expressLayouts = require('express-ejs-layouts');
 
 const port = 4146
 app.use(express.json());
@@ -19,9 +20,11 @@ app.use(express.static('public/resources'));
 app.set('trust proxy', 1);
 app.set('views', join(__dirname, "public"));
 app.set('view engine', 'ejs');
+app.use(expressLayouts);
 require('dotenv').config();
 
 app.use(cookieParser());
+
 app.use((req, res, next) => {
     if (req.cookies.admin === process.env.ADMIN_PASSWORD) req.admin = true;
     res.set("tdm-policy", "https://www.nineplus.sh/legal/tdm.json")
@@ -29,7 +32,6 @@ app.use((req, res, next) => {
     res.set("x-robots-tag", "noai")
     next()
 })
-
 app.get('/.well-known/tdmrep.json', (req, res) => {res.redirect("https://www.nineplus.sh/.well-known/tdmrep.json")})
 app.get('/robots.txt', (req, res) => {res.redirect("https://www.nineplus.sh/robots.txt")})
 
@@ -61,6 +63,16 @@ function visualError(code, res) {
         res.status(500).render("error", {"image": "/crashplus.png", "title": "Server puked", "description": ""});
     }
 }
+app.use(async (req, res, next) => {
+    res.locals.showers = await Game.find().select("-icon").sort({_id: -1}).limit(8).exec();
+
+    const quotes = [
+        `“average person plays more than 5 different games every year” factoid actualy just statistical error. average person plays less. GamePLUS Georg, who lives in cave & plays all his ${await Game.countDocuments({})} games, is an outlier adn should not have been counted`
+    ]
+
+    res.locals.quote = quotes[Math.floor(Math.random() * quotes.length)];
+    next();
+})
 
 app.get("/error", (req,res) => {
     throw new Error("Wah!")
@@ -114,8 +126,7 @@ app.get('/', async (req, res) => {
         yLabels.push(data.y);
     })
 
-    const newestGames = await Game.find().select("-icon").sort({ _id: -1 }).limit(18).exec();
-    res.render('index', {isAdmin: req.admin, xLabels: JSON.stringify(xLabels), yLabels: JSON.stringify(yLabels), newestGames});
+    res.render('index', {isAdmin: req.admin, xLabels: JSON.stringify(xLabels), yLabels: JSON.stringify(yLabels)});
 });
 
 app.get('/create', (req, res) => {

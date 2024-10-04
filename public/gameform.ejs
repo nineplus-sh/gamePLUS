@@ -55,7 +55,7 @@
     <table id="executablearea">
         <% game?.executables.forEach(function(executable, index) { %>
             <tr id="executable_wrap_<%= index %>">
-                <td><img id='executable_picon_<%= index %>' class="platformswitcher" src="/icons/platforms/<%= executable.platform %>.png" onclick="crankPlatform(event)"></td>
+                <td><img id='executable_picon_<%= index %>' class="platformswitcher" src="/icons/platforms/<%= executable.platform %>.png" onclick="crankPlatform(event)" oncontextmenu="crankPlatform(event)"></td>
                 <td></td>
                 <td><input type='text' name='executable_name_<%= index %>' placeholder='name' value="<%= executable.name %>" oninput="smartName(event)"></td>
                 <td><input type='text' name='executable_arguments_<%= index %>' placeholder='arguments' value="<%= executable.arguments %>"></td>
@@ -109,7 +109,7 @@
         const executable = document.createElement("tr");
         const curRow = document.querySelector("[id^='executable_wrap_']") ? parseInt(Array.from(document.querySelectorAll("[id^='executable_wrap_']")).slice(-1)[0].id.split("_")[2]) + 1 : 0
         executable.id = `executable_wrap_${curRow}`
-        executable.innerHTML += `<td><img id="executable_picon_${curRow}" class="platformswitcher" src="/icons/platforms/unknown.png" onclick="crankPlatform(event)"></td>`
+        executable.innerHTML += `<td><img id="executable_picon_${curRow}" class="platformswitcher" src="/icons/platforms/unknown.png" onclick="crankPlatform(event)" oncontextmenu="crankPlatform(event)"></td>`
         executable.innerHTML += `<td><img id="executable_betakey_${curRow}" class="betakey" src="/icons/rocket--exclamation.png"></td>`
         executable.innerHTML += `<td><input type='text' name='executable_name_${curRow}' placeholder='name' pattern='.*(?<!\.app|\.sh|\.bat)$' oninput='smartName(event)'></td>`
         executable.innerHTML += `<td><input type='text' name='executable_arguments_${curRow}' placeholder='arguments'></td>`
@@ -241,6 +241,7 @@
     }
 
     function crankPlatform(event) {
+        event.preventDefault();
         let icon = event.target;
         let platformInput = event.target.parentNode.parentNode.querySelector(`input[name="executable_platform_${icon.id.split("_picon_")[1]}`)
         let nextPlatformIndex = platformOrder.indexOf(platformInput.value) + 1
