@@ -87,3 +87,9 @@ footer .ninemark {
 .shower:nth-child(even) {
     right: 0.5em;
 }
+.shower:nth-child(odd) img {
+    transform: rotate(10deg)
+}
+.shower:nth-child(even) img {
+    transform: rotate(-10deg)
+}
