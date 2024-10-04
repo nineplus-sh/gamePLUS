@@ -4,14 +4,13 @@
 </p>
 
 <div><canvas id="myChart"></canvas></div>
-<form action="/search" method="get" style="float: right;">
+<form action="/search" method="get" style="float: right; margin: 0;">
     <input id="gamename" name="game" placeholder="Type a game name...">
     <input type="submit" value="Search">
 </form>
 
-<hr>
-
-<p><a href="/create">Create new app</a></p>
+<hr><br>
+<p style="display: flex; justify-content: space-between; margin: 0;"><a href="/create">Create new game</a> <a href="/games">See all games</a></p>
 
 <%- contentFor('head') %>
 <title>gamePLUS!</title>

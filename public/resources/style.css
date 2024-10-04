@@ -45,6 +45,7 @@ footer {
     align-items: center;
     justify-content: space-between;
     max-height: 3.3em;
+    overflow: hidden;
 }
 footer .ninemark {
     background-color: white;

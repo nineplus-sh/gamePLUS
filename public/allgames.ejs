@@ -1,59 +1,60 @@
-<html lang="en">
-    <head>
-        <title>gamePLUS</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <style>
-            html {
-                font-family: sans-serif;
-            }
-            .game {
-                display: flex;
-                text-decoration: none;
-                color: black;
-                width: 20em;
-                height: 48px;
+<h2>All games</h2>
+<p>gamePLUS can detect these <%= games.length %> games:</p>
+<div class="games">
+    <% for (let game of games) { %>
+        <a href="/game/<%= game._id %>" class="game">
+            <img src="/game/<%= game._id %>/icon?size=48" class="logo" loading="lazy">
 
-                padding: 0.5em;
-                margin-bottom: 1em;
-                border-radius: 5px;
-                background-color: #eee;
-                align-items: center;
-            }
+            <p class="title">
+                <b><%= game.name %></b><br>
 
-            .logo {
-                max-width: 48px;
-                max-height: 48px;
-            }
-            .title {
-                margin-left: 1em;
-            }
+                <iconify-icon icon="simple-icons:windows11" width="24" class="<%= game.executables.some(exe => exe.platform === "win32") ? 'supported' : 'unsupported' %>"></iconify-icon>
+                <iconify-icon icon="file-icons:finder" width="24" class="<%= game.executables.some(exe => exe.platform === "darwin") ? 'supported' : 'unsupported' %>"></iconify-icon>
+                <iconify-icon icon="fa6-brands:linux" width="24" class="<%= game.executables.some(exe => exe.platform === "linux") ? 'supported' : 'unsupported' %>"></iconify-icon>
+            </p>
+        </a>
+    <% } %>
+</div>
 
-            .supported {
-                color: green;
-            }
-            .unsupported {
-                color: red;
-            }
-        </style>
+<%- contentFor('head') %>
+<title>Oops! All Games</title>
+<style>
+    html {
+        font-family: sans-serif;
+    }
+    .games {
+        margin-left: 1em;
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1em 2em;
+    }
+    .game {
+        display: flex;
+        text-decoration: none;
+        color: black;
+        width: 20em;
+        height: 48px;
 
-        <script src="https://cdn.jsdelivr.net/npm/iconify-icon@2.1.0/dist/iconify-icon.min.js"></script>
-        <meta name="robots" content="noindex, nofollow" />
-    </head>
-    <body>
-        <h2>All games</h2>
-        <p>gamePLUS can detect these <%= games.length %> games:</p>
-        <% for (let game of games) { %>
-            <a href="/game/<%= game._id %>" class="game">
-                <img src="/game/<%= game._id %>/icon?size=48" class="logo" loading="lazy">
+        padding: 0.5em;
+        margin-bottom: 1em;
+        border-radius: 5px;
+        background-color: #eee;
+        align-items: center;
+    }
 
-                <p class="title">
-                    <b><%= game.name %></b><br>
+    .logo {
+        max-width: 48px;
+        max-height: 48px;
+    }
+    .title {
+        margin-left: 1em;
+    }
 
-                    <iconify-icon icon="simple-icons:windows11" width="24" class="<%= game.executables.some(exe => exe.platform === "win32") ? 'supported' : 'unsupported' %>"></iconify-icon>
-                    <iconify-icon icon="file-icons:finder" width="24" class="<%= game.executables.some(exe => exe.platform === "darwin") ? 'supported' : 'unsupported' %>"></iconify-icon>
-                    <iconify-icon icon="fa6-brands:linux" width="24" class="<%= game.executables.some(exe => exe.platform === "linux") ? 'supported' : 'unsupported' %>"></iconify-icon>
-                </p>
-            </a>
-        <% } %>
-    </body>
-</html>
+    .supported {
+        color: green;
+    }
+    .unsupported {
+        color: red;
+    }
+</style>
+<script src="https://cdn.jsdelivr.net/npm/iconify-icon@2.1.0/dist/iconify-icon.min.js"></script>
