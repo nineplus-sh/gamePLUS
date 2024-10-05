@@ -264,11 +264,22 @@ app.get('/steam/:search', async (req, res) => {
     const { default: SGDB } = await import('steamgriddb');
     const client = new SGDB(process.env.SGDB_KEY);
 
-    const searchResult = (await client.searchGame(req.params.search))[0]
-    if(!searchResult) return res.sendStatus(404);
+    const searchResults = await client.searchGame(req.params.search);
+    if(searchResults.length === 0) return res.status(404).send({"message": "SteamGridDB did not recognize this game."});
+    const filterizedSearchResults = searchResults.filter(result => result.types.includes("steam"));
+    const searchResult =
+        searchResults[0].types.includes("steam") ?
+            searchResults[0]
+        :
+        filterizedSearchResults.length > 0 && searchResults[0].name === filterizedSearchResults[0].name
+        && filterizedSearchResults[0].types.includes("steam") ?
+            filterizedSearchResults[0]
+        : null
+
+    if(!searchResult) return res.status(404).send({"message": "SteamGridDB recognized this game, but the Steam data is missing, so gamePLUS cannot autofill."});
 
     const steamAppId = (await client.getGame({type: "id", id: searchResult.id}, {"platformdata": ["steam"]})).external_platform_data?.steam?.[0].id;
-    if(!steamAppId) return res.sendStatus(404);
+    if(!steamAppId) return res.status(404).send({"message": "SteamGridDB recognized this game as a Steam game, but the data wasn't actually sent. This shouldn't happen."})
     const appInfo = (await steamClient.getProductInfo([parseInt(steamAppId)], [])).apps[steamAppId].appinfo
 
     const osOrder = ["windows", "macos", "linux"]

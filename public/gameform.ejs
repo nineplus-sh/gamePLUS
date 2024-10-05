@@ -142,7 +142,13 @@
 
         let steamFillRequest = await fetch(`/steam/${document.querySelector("input[name='gamename']").value}`);
         if(!steamFillRequest.ok) {
-            alert("Server error")
+            try {
+                let errorData = await steamFillRequest.json();
+                alert(errorData.message || "Server errored so hard it didn't explain the error :'(");
+            } catch (e) {
+                alert("Server errored so hard it didn't explain the error :'(");
+            }
+
             new Audio("/sfx/autofill_problematic.wav").play();
             cubismMotion("/cubism/hiyori_pro/motion/hiyori_m10.motion3.json");
             return;
