@@ -2,7 +2,7 @@
     .errorwrap {
         display: flex;
         gap: 1em;
-        max-width: 500px;
+        max-width: 75%;
     }
     .errortextwrap h1 {
         margin: 0;
@@ -17,3 +17,14 @@
         </div>
     </div>
 </div>
+<script>
+    document.querySelector(".errortextwrap div").innerText = decodeURIComponent(new URLSearchParams(document.location.search).get("message"))
+    new Audio("/sfx/autofill_problematic.wav").play();
+    window.cubismNoMouth = true;
+    window.cubismColonO = true;
+    window.addEventListener("cubismready", function() {
+        window.cubismMotion("/cubism/hiyori_pro/motion/hiyori_m10.motion3.json")
+    })
+</script>
+<script src="/cubism/cubismcore.js"></script>
+<script src="/cubism/cubism.js"></script>
