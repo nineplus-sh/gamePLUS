@@ -8,10 +8,15 @@
     </head>
     <body>
         <header>
-            <a href="/"><div id="headertab"><img src="/logo.png" alt="gamePLUS"></div></a>
+            <a href="/"><div id="headertab"><img src="/logo.png" alt="gamePLUS" height="96" width="229"></div></a>
             <div id="showers" aria-hidden="true">
                 <% for (let game of showers) { %>
-                    <div class="shower"><div class="beam"></div><a href="/game/<%= game._id %>"><img src="/game/<%= game._id %>/icon?size=48" title="<%= game.name %>" width="48" height="48"></a></div>
+                    <div class="shower hidden">
+                        <div class="beam"></div>
+                        <a href="/game/<%= game._id %>">
+                            <img src="/game/<%= game._id %>/icon?size=48" title="<%= game.name %>" width="48" height="48" onload="this.parentNode.parentNode.classList.remove('hidden')">
+                        </a>
+                    </div>
                 <% } %>
             </div>
         </header>

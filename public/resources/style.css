@@ -94,3 +94,7 @@ footer .ninemark {
 .shower:nth-child(even) img {
     transform: rotate(-10deg)
 }
+
+.hidden {
+    display: none;
+}
