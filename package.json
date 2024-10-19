@@ -7,11 +7,11 @@
     "start": "node index.js"
   },
   "dependencies": {
+    "compression": "^1.7.4",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "ejs": "^3.1.10",
-    "express": "^4.19.2",
     "express-ejs-layouts": "^2.5.1",
     "express-rate-limit": "^7.4.0",
     "ico-to-png": "^0.2.2",
@@ -19,7 +19,8 @@
     "multiparty": "^4.2.3",
     "sharp": "^0.33.5",
     "steam-user": "^5.0.10",
-    "steamgriddb": "^2.2.0"
+    "steamgriddb": "^2.2.0",
+    "ultimate-express": "dimdenGD/ultimate-express#c7dd7532"
   },
   "trustedDependencies": [
     "lodepng"
