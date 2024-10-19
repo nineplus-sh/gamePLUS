@@ -266,7 +266,17 @@ app.get('/api/games', cors(), async (req, res) => {
             }
         }
     } : {}).select("-icon").exec();
-    res.json(games.map(g => ({ _id: g._id, name: g.name, executables: g.executables })));
+
+    const strippedGames = games.map(game => {
+        game.executables.forEach(executable => {if(executable.arguments === "") delete executable.arguments;})
+        return {
+            _id: game._id,
+            name: game.name,
+            executables: game.executables
+        };
+    })
+
+    res.json(strippedGames);
 })
 
 app.get('/learn', async (req, res) => {
