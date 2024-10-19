@@ -259,7 +259,13 @@ app.get('/games', async (req, res) => {
     res.render("allgames", {games: await Game.find({}).sort({"name": 1}).select("-icon").exec()})
 });
 app.get('/api/games', cors(), async (req, res) => {
-    const games = await Game.find({}).select("-icon").exec();
+    const games = await Game.find(req.query.platform ? {
+        executables: {
+            $elemMatch: {
+                platform: req.query.platform
+            }
+        }
+    } : {}).select("-icon").exec();
     res.json(games.map(g => ({ _id: g._id, name: g.name, executables: g.executables })));
 })
 
