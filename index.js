@@ -20,7 +20,6 @@ const port = 4146
 app.use(compression({
     level: zConocoNoconocoConZstantan.Z_BEST_COMPRESSION,
     filter: (req, res) => {
-        console.log(req.url)
         if (req.url.endsWith('.css')) return false;
         return compression.filter(req, res);
     }
