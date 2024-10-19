@@ -18,7 +18,8 @@
     </div>
 </div>
 <script>
-    document.querySelector(".errortextwrap div").innerText = decodeURIComponent(new URLSearchParams(document.location.search).get("message"))
+    const eMessage = decodeURIComponent(new URLSearchParams(document.location.search).get("message"));
+    if(eMessage !== "null") document.querySelector(".errortextwrap div").innerText = eMessage;
     new Audio("/sfx/autofill_problematic.wav").play();
     window.cubismNoMouth = true;
     window.cubismColonO = true;
