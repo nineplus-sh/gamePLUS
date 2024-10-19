@@ -268,11 +268,18 @@ app.get('/api/games', cors(), async (req, res) => {
     } : {}).select("-icon").exec();
 
     const strippedGames = games.map(game => {
-        game.executables.forEach(executable => {if(executable.arguments === "") delete executable.arguments;})
+        const filteredExecutables = game.executables.filter(executable => {
+            const thePlatform = executable.platform;
+
+            if(executable.arguments === "") delete executable.arguments;
+            if(req.query.platform) delete executable.platform;
+            return !req.query.platform || thePlatform === req.query.platform;
+        });
+
         return {
             _id: game._id,
             name: game.name,
-            executables: game.executables
+            executables: filteredExecutables
         };
     })
 
