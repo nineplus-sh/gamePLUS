@@ -20,7 +20,7 @@ const port = 4146
 app.use(compression({
     level: zConocoNoconocoConZstantan.Z_BEST_COMPRESSION,
     filter: (req, res) => {
-        if (!req.url.startsWith("/api/games") return false;
+        if (!req.url.startsWith("/api/games")) return false;
         return compression.filter(req, res);
     }
 }));
